@@ -50,7 +50,7 @@ Jämför ändrade nycklar mot schemat `https://coderabbit.ai/integrations/schema
 ## Granskning i det här repot
 
 - **Grind:** `main` kräver PR, linjär historik, lösta granskningstrådar och CodeQL utan fel eller allvarliga larm. Inga andra kontroller krävs, men de som körs ska vara gröna. De lokala testerna i Kommandon är testgrinden.
-- **CodeRabbit:** ärver den centrala konfigurationen i `pissmyran/coderabbit`. Repots `.coderabbit.yaml` pekar ut riskområden med egna granskningsinstruktioner; läs den del som gäller filerna du ändrar innan du börjar.
+- **CodeRabbit:** repots egen `.coderabbit.yaml` är den centrala basen (`inheritance: false`) och ärver inget. Det är den här filen som styr granskningen här, och den som de andra repona ärver.
 - **Sourcery och Codex:** granskar också, som GitHub-appar utan egen konfiguration här, och de granskar även dokumentation. Behandla deras trådar som CodeRabbits.
 
 ## GitHub från sessionen
