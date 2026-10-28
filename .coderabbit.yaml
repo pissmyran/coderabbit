@@ -1,0 +1,269 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: sv-SE
+tone_instructions: >-
+  Skriv kommentarer och sammanfattningar kort på svenska.
+  Skriv PR-titlar på engelska. Behåll identifierare och etiketter.
+  Beskriv konkreta fel, konsekvenser och åtgärder.
+  Undvik upprepningar, beröm och kosmetiska förslag.
+
+# Central bas. Ärv inte äldre inställningar från UI.
+inheritance: false
+early_access: false
+enable_free_tier: true
+
+reviews:
+  profile: quiet
+
+  auto_approvals:
+    enabled: false
+
+  # Kort sammanfattning i PR-beskrivningen.
+  high_level_summary: true
+  high_level_summary_in_walkthrough: false
+  high_level_summary_placeholder: "@coderabbitai summary"
+  high_level_summary_instructions: |
+    Skriv en kort sammanfattning på svenska.
+    Beskriv huvudändringen och dess praktiska konsekvens.
+    Ta med kompatibilitetsbrott, migreringar och driftkrav när de finns.
+    Påstå inte att tester har körts utan verifierat underlag.
+    Upprepa inte titeln eller en lista över alla ändrade filer.
+
+  # Titelgenerering aktiveras med markören i PR-titeln.
+  auto_title_placeholder: "@coderabbitai"
+  auto_title_instructions: |
+    Skriv en kort PR-titel på engelska enligt Conventional Commits.
+    Använd type: description eller type(scope): description.
+    Tillåtna typer är feat, fix, docs, refactor, perf, test,
+    build, ci, chore, style och revert.
+    Använd feat för ny funktionalitet och fix för felrättningar.
+    Använd chore(deps) för vanliga beroendeuppdateringar.
+    Använd fix med relevant scope för säkerhetsfixar.
+    Använd inte deps eller security som fristående typer.
+    Beskriv huvudändringen med ett verb i imperativ.
+    Sikta på färre än 72 tecken utan att förlora viktig information.
+    Använd scope endast när det tillför information.
+    Lägg inte till obestyrkta effekter eller ärendereferenser.
+    Avsluta inte titeln med punkt.
+
+  # Begränsa statusmeddelanden och presentationsbrus.
+  review_status: false
+  review_info: false
+  review_details: false
+  review_progress: false
+  commit_status: false
+  fail_commit_status: false
+  collapse_walkthrough: true
+  changed_files_summary: false
+  sequence_diagrams: false
+  estimate_code_review_effort: false
+  assess_linked_issues: false
+  related_issues: false
+  related_prs: false
+  in_progress_fortune: false
+  poem: false
+  enable_prompt_for_ai_agents: false
+
+  suggested_reviewers: false
+  auto_assign_reviewers: false
+  abort_on_close: true
+
+  slop_detection:
+    enabled: false
+
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false
+    base_branches: []
+    labels: ["!wip"]
+    ignore_usernames: []
+    ignore_title_keywords: []
+
+  # Granska övriga filer utan en repospecifik inkluderingslista.
+  path_filters:
+    - "!**/docs/**"
+    - "!**/doc/**"
+    - "!**/*.md"
+    - "!**/*.mdx"
+    - "!**/*.rst"
+    - "!**/*.adoc"
+
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        Rapportera konkreta fel med tydlig konsekvens:
+        säkerhetsbrister, felaktigt beteende, dataförlust,
+        trasiga byggen eller driftsättningar och betydande
+        prestanda- eller kostnadsproblem.
+        Kontrollera befintliga skydd och relevanta anropare.
+        Beskriv ett specifikt felscenario.
+        Skilj bekräftade fel från saknat verifieringsunderlag.
+        Upprepa inte samma grundfel i flera kommentarer.
+        Avstå från kosmetiska förslag, namnpreferenser
+        och allmänna refaktoreringsförslag.
+        Begär tester när en konkret ändrad risk behöver täckas.
+        Försvaga aldrig tester, behörigheter eller mergekontroller.
+        Flagga läckta hemligheter utan att återge hemliga värden.
+
+    - path: ".github/**"
+      instructions: |
+        Prioritera tokenbehörigheter, hemligheter och exekvering
+        av obetrodd PR-kod.
+        Kräv inte egna CodeQL-workflows när default setup används.
+        Kräv inte ci.yaml, dependabot.yaml eller språkfiler
+        enbart för att dessa filer saknas.
+        Bedöm befintliga skydd och ändringens konkreta risker.
+
+  # Gemensam etikettlista. Säkerställ att etiketterna finns i repona.
+  suggested_labels: true
+  auto_apply_labels: true
+  labeling_instructions:
+    - label: fix
+      instructions: "Huvudändringen rättar ett konkret fel."
+
+    - label: feature
+      instructions: "Huvudändringen tillför en ny förmåga."
+
+    - label: enhancement
+      instructions: "Förbättrar befintlig funktion utan att främst rätta ett fel."
+
+    - label: chore
+      instructions: "Rutinunderhåll som inte främst gäller beroenden eller dokumentation."
+
+    - label: documentation
+      instructions: "Huvudsyftet är dokumentation eller användarhjälp."
+
+    - label: dependencies
+      instructions: "Ändrar projektberoenden, runtimeversioner eller containerbaser."
+
+    - label: security
+      instructions: >-
+        Ändrar ett säkerhetsskydd eller åtgärdar en dokumenterad säkerhetsrisk.
+        En vanlig beroendeuppdatering räcker inte.
+
+    - label: accessibility
+      instructions: "Åtgärdar en konkret tillgänglighetsbarriär i användargränssnittet."
+
+  # Rådgivande kontroller.
+  pre_merge_checks:
+    title:
+      mode: warning
+      requirements: >-
+        Följ Conventional Commits med typen feat, fix, docs,
+        refactor, perf, test, build, ci, chore, style eller revert.
+        Använd type: description eller type(scope): description.
+        Skriv beskrivningen på engelska och ange huvudändringen korrekt.
+        Acceptera en befintlig titel som uppfyller kraven.
+    description:
+      mode: warning
+    docstrings:
+      mode: "off"
+    issue_assessment:
+      mode: "off"
+    custom_checks: []
+
+  # Stäng av kodgenerering och agentbaserade tillägg.
+  finishing_touches:
+    docstrings: {enabled: false}
+    unit_tests: {enabled: false}
+    simplify: {enabled: false}
+    autofix: {enabled: false}
+    fix_ci: {enabled: false}
+    resolve_merge_conflict: {enabled: false}
+    custom: []
+
+  post_merge_actions: []
+
+  tools:
+    # Behåll kontroller som inte ersätts av CodeQL.
+    actionlint: {enabled: true}
+    shellcheck: {enabled: true}
+
+    # Undvik extra kommentarer om andra GitHub-kontroller.
+    github-checks: {enabled: false}
+
+    # Begränsa överlappande lint- och stilkommentarer.
+    biome: {enabled: false}
+    eslint: {enabled: false}
+    oxc: {enabled: false}
+    markdownlint: {enabled: false}
+    languagetool: {enabled: false}
+    vale: {enabled: false}
+    yamllint: {enabled: false}
+    stylelint: {enabled: false}
+    htmlhint: {enabled: false}
+    sqlfluff: {enabled: false}
+    squawk: {enabled: false}
+
+    # Behåll säkerhetsanalys för relevanta filer.
+    gitleaks: {enabled: true}
+    trufflehog: {enabled: true}
+    osvScanner: {enabled: true}
+    trivy: {enabled: true}
+    zizmor: {enabled: true}
+
+chat:
+  art: false
+  auto_reply: false
+  integrations:
+    jira: {usage: disabled}
+    linear: {usage: disabled}
+
+knowledge_base:
+  # Använd explicita path_instructions i stället för gamla regelfiler.
+  code_guidelines:
+    enabled: false
+
+  web_search:
+    enabled: true
+
+  learnings: {scope: local}
+  issues: {scope: local}
+  pull_requests: {scope: local}
+
+  jira: {usage: disabled}
+  linear: {usage: disabled}
+  mcp: {usage: disabled}
+
+  automatic_linking_mode: disabled
+  linked_repositories: []
+
+issue_enrichment:
+  auto_enrich:
+    enabled: false
+
+  planning:
+    enabled: false
+    auto_planning:
+      enabled: false
+
+  labeling:
+    auto_apply_labels: true
+    labeling_instructions:
+      - label: bug
+        instructions: "Konkreta fel, krascher eller regressioner."
+
+      - label: feature
+        instructions: "Önskemål om en ny förmåga."
+
+      - label: enhancement
+        instructions: "Förbättring av befintlig funktion, inte en felrapport."
+
+      - label: chore
+        instructions: "Rutinunderhåll som inte främst gäller beroenden eller dokumentation."
+
+      - label: dependencies
+        instructions: "Ärendet gäller ett projektberoende eller en runtimeversion."
+
+      - label: documentation
+        instructions: "Ärendet gäller dokumentation eller användarinstruktioner."
+
+      - label: security
+        instructions: "Konkret beskriven säkerhetsrisk. Återge inte hemligheter."
+
+      - label: accessibility
+        instructions: "Konkret tillgänglighetsbarriär i användargränssnittet."
+
+      - label: question
+        instructions: "Ärendet efterfrågar främst information, inte en kodändring."
