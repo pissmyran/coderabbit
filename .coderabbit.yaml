@@ -17,7 +17,7 @@ tone_instructions: >-
   Skip praise, repetition, cosmetic remarks, and authorship guesses.
 
 inheritance: false
-early_access: false
+early_access: true
 enable_free_tier: true
 
 reviews:
@@ -42,7 +42,7 @@ reviews:
 
   # CodeRabbit writes the title only when the PR title contains this
   # placeholder. Open a PR titled `[auto-title]` to get a generated title.
-  auto_title_placeholder: "[auto-title]"
+  auto_title_placeholder: "auto"
   auto_title_instructions: |
     Write the PR title in English following Conventional Commits:
     `type: description` or `type(scope): description`.
