@@ -1,10 +1,10 @@
 # CLAUDE.md – coderabbit
 
-Vägledning för Claude Code i `pissmyran/coderabbit`. Repot innehåller den centrala CodeRabbit-konfigurationen som alla andra repon ärver.
+Guidance for Claude Code in `pissmyran/coderabbit`. The repo holds the central CodeRabbit configuration that every other repo inherits.
 
-De gemensamma reglerna för alla repon finns i [STYRNING.md](https://github.com/pissmyran/.github/blob/main/STYRNING.md) i `pissmyran/.github`. Kärnreglerna nedan är en ordagrann kopia. Jämför versionen i markeringen med källan i början av varje session (`curl -sS https://raw.githubusercontent.com/pissmyran/.github/main/STYRNING.md`); är kopian äldre, uppdatera den först i en egen PR (`docs: sync core rules from .github`).
+The shared rules for all repos live in [STYRNING.md](https://github.com/pissmyran/.github/blob/main/STYRNING.md) in `pissmyran/.github`. The core rules below are a verbatim copy. Compare the version in the marker with the source at the start of every session (`curl -sS https://raw.githubusercontent.com/pissmyran/.github/main/STYRNING.md`); if the copy is older, update it first in a separate PR (`docs: sync core rules from .github`).
 
-## Kärnregler
+## Core rules
 
 <!-- kärnregler:start version=2026-10-28 källa=https://github.com/pissmyran/.github/blob/main/STYRNING.md -->
 1. **Inga personliga värden.** Repot är publikt. Skriv aldrig in riktiga id:n, domäner, e-postadresser, namn, nycklar, betallänkar eller kontouppgifter i kod, konfiguration, tester, dokumentation eller commit-meddelanden. Använd platshållare och `example.com`-värden.
@@ -24,47 +24,56 @@ De gemensamma reglerna för alla repon finns i [STYRNING.md](https://github.com/
 15. **GitHub bara via REST.** `gh pr` och `gh issue` fungerar inte i molnsessioner (GraphQL är avstängt). Använd `gh api` och de särskilda `ccr`-vägarna; se avsnittet GitHub från sessionen.
 <!-- kärnregler:slut -->
 
-## Om repot
+## About the repo
 
-- **`.coderabbit.yaml`** är basen för granskningen i alla repon: engelska kommentarer, tyst profil, slop-detektion med etiketten `slop`, inga automatiska godkännanden, säkerhetsverktygen (gitleaks, trufflehog, osv-scanner, trivy, zizmor) på och dokumentationen (`docs/`, `*.md`) undantagen.
-- **Repona ärver** basen med `inheritance: true` i sina egna `.coderabbit.yaml` och lägger bara till `path_filters` och `path_instructions`.
-- **En ändring här slår igenom i alla repon** vid nästa granskning. Väg varje ändring mot hur den påverkar alla repon.
+- **`.coderabbit.yaml`** is the review base for every repo: everything free for public repos is on (including `early_access`), everything that can cost credits is off, and CodeRabbit is advisory and never blocks. README.md describes what the base sets.
+- **The repos inherit** the base with `inheritance: true` in their own `.coderabbit.yaml` and add only what is repo-specific: `path_instructions` for their own folders, their own `path_filters`, labels, checks and linked repos. Lists merge with the repo's entries first, and an entry with the same `path` or `label` in the repo replaces the base's.
+- **A change here takes effect in every repo** at its next review. Weigh every change against how it affects all repos.
 
-## Kommandon
+## Commands
 
-Kontrollera att filen är giltig YAML:
+Check that the file is valid YAML:
 
 ```bash
 npx --yes js-yaml@latest .coderabbit.yaml > /dev/null
 ```
 
-Jämför ändrade nycklar mot schemat `https://coderabbit.ai/integrations/schema.v2.json`.
+Check formatting:
 
-## Regler för det här repot
+```bash
+npx --yes prettier@latest --check .coderabbit.yaml README.md
+```
 
-- **Gemensamt här, specifikt där:** inställningar som gäller alla repon hör hemma här; riskinstruktioner för enskilda filer hör hemma i respektive repo.
-- **Instruktionerna skrivs på engelska**, korta och konkreta, i samma stil som de befintliga. Allt utom dokumentationen är på engelska i alla repon.
-- **Försvaga aldrig granskningen:** slå inte av säkerhetsverktyg, slå inte på automatiska godkännanden och lägg inte till undantag för kod.
-- **Etiketterna** i `labeling_instructions` ska finnas i alla repon. Lägger du till en etikett, säg det i PR:en så att ägaren kan skapa den. CodeRabbit kan bara sätta etiketter, aldrig ta bort dem; den som rättar fynden tar bort en granskningsetikett (`review-ready`, `needs-rework`, `rewrite-recommended`) som inte längre stämmer.
+Compare changed keys with the configuration reference at `https://docs.coderabbit.ai/reference/configuration` (the schema is `https://coderabbit.ai/integrations/schema.v2.json`).
 
-## Granskning i det här repot
+## Rules for this repo
 
-- **Grind:** `main` kräver PR, linjär historik, lösta granskningstrådar och CodeQL utan fel eller allvarliga larm. Inga andra kontroller krävs, men de som körs ska vara gröna. De lokala testerna i Kommandon är testgrinden.
-- **CodeRabbit:** repots egen `.coderabbit.yaml` är den centrala basen (`inheritance: false`) och ärver inget. Det är den här filen som styr granskningen här, och den som de andra repona ärver.
-- **Sourcery och Codex:** granskar också, som GitHub-appar utan egen konfiguration här, och de granskar även dokumentation. Behandla deras trådar som CodeRabbits.
+- **Language:** everything in this repo is English, documentation included. Only the core rules block above follows its source.
+- **Shared here, specific there:** settings that apply to every repo belong here; risk instructions for specific files belong in each repo.
+- **Instructions are written in English,** short and concrete, in the same style as the existing ones.
+- **Never weaken the review:** do not turn off security tools and do not add exclusions for code.
+- **Never blocking:** do not turn on automatic approvals, `fail_commit_status` or checks in `error` mode.
+- **Zero cost:** do not turn on `finishing_touches` or `issue_enrichment.planning`; they can use credits. The instructions under `code_generation` may stay.
+- **Labels** in `labeling_instructions` must exist in every repo. If you add a label, say so in the PR so the owner can create it. The review states `review-ready`, `needs-rework` and `rewrite-recommended` form a mutually exclusive group (`mutually_exclusive_groups`).
 
-## GitHub från sessionen
+## Review in this repo
 
-GraphQL är avstängt, så `gh pr` och `gh issue` fungerar inte. Använd REST:
+- **Gate:** `main` requires a PR, linear history, resolved review threads and CodeQL without errors or serious alerts. No other checks are required, but the ones that run must be green. The local checks under Commands are the test gate.
+- **CodeRabbit:** this repo's own `.coderabbit.yaml` is the central base (`inheritance: false`) and inherits nothing. It governs the review here and is what the other repos inherit.
+- **Sourcery and Codex:** also review, as GitHub apps without their own configuration here, and they review documentation too. Treat their threads like CodeRabbit's.
 
-- Öppna PR: `gh api repos/pissmyran/coderabbit/pulls -f base=main -f head=<gren> -f title='…' -f body='…'`
-- PR från gren: `gh api 'repos/pissmyran/coderabbit/pulls?head=pissmyran:<gren>&state=open'`
-- Issue: `gh api repos/pissmyran/coderabbit/issues/<n>` och `…/issues/<n>/comments`
-- Granskningstrådar: `gh api repos/pissmyran/coderabbit/pulls/<n>/ccr/review_threads`
-- Svara i tråd: `gh api repos/pissmyran/coderabbit/pulls/<n>/comments/<id>/replies -f body='…'`
-- Lös tråd: `gh api -X POST repos/pissmyran/coderabbit/pulls/<n>/ccr/comments/<id>/resolve`
-- Kontroller: `gh api repos/pissmyran/coderabbit/commits/<sha>/check-runs`
-- Auto-merge på: `gh api -X PUT repos/pissmyran/coderabbit/pulls/<n>/ccr/auto_merge -f merge_method=squash`
-- Är PR:en redan klar att mergas (auto-merge vägras då), squash-merga direkt: `gh api -X PUT repos/pissmyran/coderabbit/pulls/<n>/merge -f merge_method=squash`
-- Stäng PR: `gh api -X PATCH repos/pissmyran/coderabbit/pulls/<n> -f state=closed`
-- Radera gren: GitHub raderar grenen vid merge. En stängd PR:s gren raderas med `git push origin --delete <gren>` (API-vägen är spärrad).
+## GitHub from a session
+
+GraphQL is disabled, so `gh pr` and `gh issue` do not work. Use REST:
+
+- Open a PR: `gh api repos/pissmyran/coderabbit/pulls -f base=main -f head=<branch> -f title='…' -f body='…'`
+- PR from a branch: `gh api 'repos/pissmyran/coderabbit/pulls?head=pissmyran:<branch>&state=open'`
+- Issue: `gh api repos/pissmyran/coderabbit/issues/<n>` and `…/issues/<n>/comments`
+- Review threads: `gh api repos/pissmyran/coderabbit/pulls/<n>/ccr/review_threads`
+- Reply in a thread: `gh api repos/pissmyran/coderabbit/pulls/<n>/comments/<id>/replies -f body='…'`
+- Resolve a thread: `gh api -X POST repos/pissmyran/coderabbit/pulls/<n>/ccr/comments/<id>/resolve`
+- Checks: `gh api repos/pissmyran/coderabbit/commits/<sha>/check-runs`
+- Enable auto-merge: `gh api -X PUT repos/pissmyran/coderabbit/pulls/<n>/ccr/auto_merge -f merge_method=squash`
+- If the PR is already mergeable (auto-merge is then refused), squash-merge directly: `gh api -X PUT repos/pissmyran/coderabbit/pulls/<n>/merge -f merge_method=squash`
+- Close a PR: `gh api -X PATCH repos/pissmyran/coderabbit/pulls/<n> -f state=closed`
+- Delete a branch: GitHub deletes the branch on merge. A closed PR's branch is deleted with `git push origin --delete <branch>` (the API route is blocked).
