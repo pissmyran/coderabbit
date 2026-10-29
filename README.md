@@ -21,6 +21,13 @@ Den centrala CodeRabbit-konfigurationen för repona under `pissmyran`. Varje rep
 - **Kunskap:** CodeRabbit läser repots `CLAUDE.md` och `AGENTS.md` som granskningskriterier, söker på webben och lär sig av tidigare granskningar.
 - **Ärenden:** nya ärenden berikas med sammanhang och får etiketter automatiskt.
 
+## Länkade repon
+
+CodeRabbit kan läsa länkade repon under granskningen och varna för ändringar som bryter något i ett annat repo. Länkarna sätts i varje repos egen `.coderabbit.yaml` under `knowledge_base.linked_repositories`, inte här.
+
+- **Bastion:** `bastion`, `bastion_apple`, `bastion_linux`, `bastion_windows` och `bastion_android` länkar till varandra. De är samma klient på olika plattformar och delar synkformatet, som ägs av `bastion_apple`.
+- **Webbtjänsterna:** `dumpen`, `jobb`, `klarsprak` och `politiker` länkar till varandra. De delar mönstret för platshållare, `tools/render.mjs`, Docker, `import-settings.sh` och dokumentationssajten, så en ändring av de delade verktygen ska göras likadant i alla fyra.
+
 ## Etiketter
 
 Etiketterna följer GitHubs standarduppsättning plus några extra, och alla finns i alla repon.
