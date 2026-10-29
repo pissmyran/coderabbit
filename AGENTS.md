@@ -2,6 +2,8 @@
 
 The central CodeRabbit configuration that every other repository inherits.
 
+Everything here is settings and instructions for CodeRabbit only, to get the most out of it on the current plan. None of it is a rule for other review bots.
+
 Read the shared rules at the start of every session: [GOVERNANCE.md](https://raw.githubusercontent.com/pissmyran/.github/main/GOVERNANCE.md).
 
 ## Commands
