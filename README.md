@@ -1,43 +1,43 @@
 # coderabbit
 
-Den centrala CodeRabbit-konfigurationen för repona under `pissmyran`. Varje repo ärver `.coderabbit.yaml` härifrån med `inheritance: true` i sin egen `.coderabbit.yaml` och lägger bara till det som gäller just det repot: `path_instructions` för repots egna mappar, egna `path_filters`, egna etiketter och eventuella repospecifika kontroller.
+The central CodeRabbit configuration for the repos under `pissmyran`. Every repo inherits `.coderabbit.yaml` from here with `inheritance: true` in its own `.coderabbit.yaml` and adds only what applies to that repo: `path_instructions` for its own folders, its own `path_filters`, its own labels, linked repos and any repo-specific checks.
 
-## Principer
+## Principles
 
-- **Allt gratis används:** alla funktioner som är gratis för publika repon är på, inklusive `early_access`.
-- **Inget som kostar:** agentfunktioner som skriver commits eller PR:er (docstrings, enhetstester, autofix, fix CI, sammanslagningskonflikter, förenkling, planering) är av, eftersom de kan dra krediter. Deras instruktioner finns ändå kvar under `code_generation`.
-- **Rådgivande, aldrig blockerande:** inga automatiska godkännanden, inga "request changes", ingen commit-status eller check som kan fallera, och alla kontroller före merge står på `warning`.
-- **Lite brus:** profilen `quiet` lägger de viktigaste fynden inline och resten hopfällt i sammanfattningen. Dikter, fortunes, sekvensdiagram och tidsuppskattningar är av.
+- **Use everything free:** every feature that is free for public repos is on, including `early_access`.
+- **Nothing that costs:** agent features that write commits or PRs (docstrings, unit tests, autofix, fix CI, merge conflicts, simplify, planning) are off, because they can use credits. Their instructions still live under `code_generation`.
+- **Advisory, never blocking:** no automatic approvals, no "request changes", no commit status or check that can fail, and every pre-merge check is set to `warning`.
+- **Little noise:** the `quiet` profile posts the most important findings inline and keeps the rest collapsed in the summary. Poems, fortunes, sequence diagrams and effort estimates are off.
 
-## Vad basen ställer in
+## What the base sets
 
-- **Språk:** granskningar, sammanfattningar, titlar och instruktioner på engelska.
-- **Automatik:** granskning av varje PR och varje ny push (utkast och PR:er med etiketten `wip` hoppas över), automatiska etiketter, automatiskt tilldelade granskare, PR-sammanfattning, och PR-titel när titeln innehåller platshållaren `[auto-title]`.
-- **Kvot:** sammanfattningskommentaren högst upp i PR:en (walkthrough) uppdateras vid varje granskning och visar hopfällt hur många granskningar som är kvar och när kvoten fylls på. Kommentera `@coderabbitai rate limit` för att se kvoten utan att starta en granskning.
-- **Granskning:** både kod och dokumentation granskas. Bara genererade filer och låsfiler hoppas över.
-- **Instruktioner per sökväg:** allmänna regler för alla filer, dokumentation, agentinstruktioner, `.github/`, JavaScript och TypeScript, Python, Rust, Swift, Kotlin och C#, skalskript, Docker, Cloudflare-konfiguration och dokumentationssajten.
-- **Körmiljöns regler** (Cloudflare Workers, SSH-klienterna, kontaktverktygen) ligger i respektive repos egen `.coderabbit.yaml`, inte här.
-- **Kontroller före merge (rådgivande):** titeln enligt Conventional Commits, beskrivningen, länkade ärenden, "Docs in the same PR" och "No personal values".
-- **Verktyg:** säkerhetsskannrar (gitleaks, trufflehog, osv-scanner, trivy, opengrep, semgrep, presidio, skillspector, checkov, zizmor, ast-grep) och linters för repornas språk (actionlint, shellcheck, hadolint, dotenv-linter, ruff, clippy, swiftlint, detekt). Linters som överlappar Prettier eller bara ger stilbrus är av.
-- **Kunskap:** CodeRabbit läser repots `CLAUDE.md` och `AGENTS.md` som granskningskriterier, söker på webben och lär sig av tidigare granskningar.
-- **Ärenden:** nya ärenden berikas med sammanhang och får etiketter automatiskt.
+- **Language:** reviews, summaries, titles and instructions in English.
+- **Automation:** a review of every PR and every new push (drafts and PRs labeled `wip` are skipped), automatic labels, automatically assigned reviewers, a PR summary, and a PR title when the title contains the placeholder `[auto-title]`.
+- **Quota:** the summary comment at the top of the PR (the walkthrough) is updated on every review and shows, collapsed, how many reviews remain and when the quota refills. Comment `@coderabbitai rate limit` to see the quota without starting a review.
+- **Review scope:** both code and documentation are reviewed. Only generated files and lock files are skipped.
+- **Path instructions:** general rules for every file, documentation, agent instructions, `.github/`, JavaScript and TypeScript, Python, Rust, Swift, Kotlin and C#, shell scripts, Docker, Cloudflare configuration and the documentation site.
+- **Runtime rules** (Cloudflare Workers, the SSH clients, the contact tools) live in each repo's own `.coderabbit.yaml`, not here.
+- **Pre-merge checks (advisory):** the title follows Conventional Commits, the description, linked issues, "Docs in the same PR" and "No personal values".
+- **Tools:** security scanners (gitleaks, trufflehog, osv-scanner, trivy, opengrep, semgrep, presidio, skillspector, checkov, zizmor, ast-grep) and linters for the repos' languages (actionlint, shellcheck, hadolint, dotenv-linter, ruff, clippy, swiftlint, detekt). Linters that overlap Prettier or only add style noise are off.
+- **Knowledge:** CodeRabbit reads the repo's `CLAUDE.md` and `AGENTS.md` as review criteria, searches the web and learns from earlier reviews.
+- **Issues:** new issues are enriched with context and labeled automatically.
 
-## Länkade repon
+## Linked repos
 
-CodeRabbit kan läsa länkade repon under granskningen och varna för ändringar som bryter något i ett annat repo. Länkarna hör hemma i varje repos egen `.coderabbit.yaml` under `knowledge_base.linked_repositories`, inte här. Så här ska repona länkas:
+CodeRabbit can read linked repos during a review and warn about changes that break something in another repo. The links belong in each repo's own `.coderabbit.yaml` under `knowledge_base.linked_repositories`, not here. This is how the repos are to be linked:
 
-- **Bastion:** `bastion`, `bastion_apple`, `bastion_linux`, `bastion_windows` och `bastion_android` länkas till varandra. De är samma klient på olika plattformar och delar synkformatet, som ägs av `bastion_apple`.
-- **Webbtjänsterna:** `dumpen`, `jobb`, `klarsprak` och `politiker` länkas till varandra. De delar mönstret för platshållare, `tools/render.mjs`, Docker, `import-settings.sh` och dokumentationssajten, så en ändring av de delade verktygen ska göras likadant i alla fyra.
+- **Bastion:** `bastion`, `bastion_apple`, `bastion_linux`, `bastion_windows` and `bastion_android` are linked to each other. They are one client on different platforms and share the sync format, which `bastion_apple` owns.
+- **The services:** `dumpen`, `jobb`, `klarsprak` and `politiker` are linked to each other. They share the pattern for placeholders, `tools/render.mjs`, Docker, `import-settings.sh` and the documentation site, so a change to the shared tooling must be made the same way in all four.
 
-## Etiketter
+## Labels
 
-Etiketterna följer GitHubs standarduppsättning plus några extra, och alla finns i alla repon.
+The labels follow GitHub's default set plus a few extras, and every label exists in every repo.
 
-- **Typ av ändring (PR):** `fix`, `feature`, `enhancement`, `chore`, `documentation`, `dependencies`, `security`, `accessibility` och `duplicate`. En PR kan ha flera.
-- **Granskningsläge (PR):** `review-ready`, `needs-rework` eller `rewrite-recommended`. De är en ömsesidigt uteslutande grupp, så en PR har högst en av dem.
-- **Ärenden:** `bug`, `feature`, `enhancement`, `chore`, `dependencies`, `documentation`, `security`, `accessibility`, `question`, `duplicate` och `good first issue`.
-- **Sätts av andra:** `slop` sätts av slop-detektionen, `wip` av författaren. `help wanted`, `invalid` och `wontfix` sätter ägaren.
+- **Type of change (PR):** `fix`, `feature`, `enhancement`, `chore`, `documentation`, `dependencies`, `security`, `accessibility` and `duplicate`. A PR can have several.
+- **Review state (PR):** `review-ready`, `needs-rework` or `rewrite-recommended`. They form a mutually exclusive group, so a PR has at most one of them.
+- **Issues:** `bug`, `feature`, `enhancement`, `chore`, `dependencies`, `documentation`, `security`, `accessibility`, `question`, `duplicate` and `good first issue`.
+- **Set by others:** `slop` is set by slop detection and `wip` by the author. The owner sets `help wanted`, `invalid` and `wontfix`.
 
-Repona lägger till egna etiketter i sin egen `.coderabbit.yaml`, till exempel `sync-format` i Bastion-repona.
+Repos add their own labels in their own `.coderabbit.yaml`, for example `sync-format` in the Bastion repos.
 
-En ändring här slår igenom i alla repon vid nästa granskning.
+A change here takes effect in every repo at its next review.
