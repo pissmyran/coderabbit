@@ -16,3 +16,8 @@ bin-release/
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
+.token-optimizer/decisions.log
+.token-optimizer/state/
+.token-optimizer/probe/*
+!.token-optimizer/probe/run-probe.sh
+!.token-optimizer/optimize.sh
