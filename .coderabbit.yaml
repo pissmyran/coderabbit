@@ -13,7 +13,7 @@
 language: en-US
 tone_instructions: >-
   Write short, concrete comments in English. Name the defect, its consequence
-  and a better alternative. Keep identifiers and labels as they are. Skip
+  and a better alternative. Skip
   praise, repetition and cosmetic remarks.
 
 inheritance: false
@@ -70,12 +70,12 @@ reviews:
   review_status: true
   # Collapsed run details in the walkthrough, including the remaining PR review
   # quota and when it refills. `@coderabbitai rate limit` shows it on demand.
-  review_info: true
+  review_info: false
   review_details: false
   review_progress: false
   commit_status: false
   fail_commit_status: false
-  collapse_walkthrough: true
+  collapse_walkthrough: false
   changed_files_summary: true
   sequence_diagrams: false
   estimate_code_review_effort: false
@@ -106,7 +106,7 @@ reviews:
     enabled: true
     auto_incremental_review: true
     auto_pause_after_reviewed_commits: 0
-    drafts: false
+    drafts: true
     base_branches: []
     labels: ["!wip"]
     ignore_usernames: []
@@ -150,18 +150,15 @@ reviews:
         Documentation. Check that commands, paths, settings and examples match
         the code in this PR, and that links and anchors resolve.
         Follow the language rule in the repo's AGENTS.md. In repos that have
-        docs/eng/, that English mirror must change in the same PR as the Swedish
-        page it translates; repos without docs/eng/ have no mirror to update.
-        Commands go one per code block, and only what is pasted goes inside it.
-        Flag real personal values; only placeholders and example values are allowed.
-        Do not comment on wording, tone or style unless it makes an instruction
-        wrong or ambiguous.
+        docs/sv/, that Swedish mirror must change in the same PR as the English
+        page it translates; repos without docs/sv/ have no mirror to update.
+        Commands go one per code block, and only what is pasted goes inside it. Flag real personal values; only placeholders and example values are allowed. Do not comment on wording, tone or style unless it makes an instruction wrong or ambiguous.
 
     - path: "**/AGENTS.md"
       instructions: |
         Agent instructions. Shared rules live only in the governance documents
         in the .github repo; flag any repeat of them here. The file holds only
-        what is specific to this repo. AGENTS.md only imports AGENTS.md.
+        what is specific to this repo. CLAUDE.md only imports AGENTS.md.
         Check that commands listed under Commands actually exist in the repo.
 
     - path: ".github/**"
@@ -170,8 +167,7 @@ reviews:
         Dependabot may update them; flag other edits to those paths.
         Prioritize token permissions, secrets and execution of untrusted PR code.
         Do not require custom CodeQL workflows when default setup is used.
-        Do not require ci.yaml, dependabot.yaml or language files just because
-        they are missing.
+        Do not require ci.yaml, dependabot.yaml or language files just because they are missing.
 
     - path: ".github/ISSUE_TEMPLATE/**"
       instructions: |
@@ -383,7 +379,7 @@ reviews:
 
 chat:
   art: false
-  auto_reply: false
+  auto_reply: true
   allow_non_org_members: true
   integrations:
     jira: { usage: disabled }
@@ -462,6 +458,8 @@ issue_enrichment:
       - label: duplicate
         instructions: "Only when an open issue clearly describes the same problem; link it."
       - label: good first issue
+        instructions: "Only for a small, well-scoped change in one area with clear acceptance
+          criteria and no security or sync-format impact."
+      - label: slop
         instructions: >-
-          Only for a small, well-scoped change in one area with clear acceptance
-          criteria and no security or sync-format impact.
+          Use when the PR and code is garbage and doesn't uphold industry standards with all that means.
