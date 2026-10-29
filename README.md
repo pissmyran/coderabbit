@@ -12,8 +12,8 @@ The central CodeRabbit configuration for the repos under `pissmyran`. Every repo
 ## What the base sets
 
 - **Language:** reviews, summaries, titles and instructions in English.
-- **Automation:** a review of every PR and every new push (drafts and PRs labeled `wip` are skipped; public repos with fewer than 10 stars may need `@coderabbitai review` as a manual trigger), automatic labels, automatically assigned reviewers, a PR summary, and a PR title when the title contains the placeholder `[auto-title]`.
-- **Quota:** the summary comment at the top of the PR (the walkthrough) is updated on every review and shows, collapsed, how many reviews remain and when the quota refills. Comment `@coderabbitai rate limit` to see the quota without starting a review.
+- **Automation:** a review of every PR to the default branch and every new push (drafts and PRs labeled `wip` are skipped; public repos with fewer than 10 stars may need `@coderabbitai review` as a manual trigger), automatic labels, automatically assigned reviewers, a PR summary, and a PR title when the title contains the placeholder `[auto-title]`.
+- **Quota:** the "Recent review info" section of the summary comment at the top of the PR is updated on every review and states how many included reviews remain this hour. Comment `@coderabbitai rate limit` to see the quota without starting a review.
 - **Review scope:** both code and documentation are reviewed. Only generated output is skipped; lock files stay in scope so the dependency scanners can read them.
 - **Path instructions:** general rules for every file, documentation, agent instructions, `.github/`, JavaScript and TypeScript, Python, Rust, Swift, Kotlin and C#, shell scripts, Docker, Cloudflare configuration and the documentation site.
 - **Runtime rules** (Cloudflare Workers, the SSH clients, the contact tools) live in each repo's own `.coderabbit.yaml`, not here.
