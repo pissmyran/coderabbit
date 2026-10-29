@@ -26,7 +26,7 @@ De gemensamma reglerna för alla repon finns i [STYRNING.md](https://github.com/
 
 ## Om repot
 
-- **`.coderabbit.yaml`** är basen för granskningen i alla repon: svenska kommentarer, tyst profil, inga automatiska godkännanden, säkerhetsverktygen (gitleaks, trufflehog, osv-scanner, trivy, zizmor) på och dokumentationen (`docs/`, `*.md`) undantagen.
+- **`.coderabbit.yaml`** är basen för granskningen i alla repon: engelska kommentarer, tyst profil, slop-detektion med etiketten `slop`, inga automatiska godkännanden, säkerhetsverktygen (gitleaks, trufflehog, osv-scanner, trivy, zizmor) på och dokumentationen (`docs/`, `*.md`) undantagen.
 - **Repona ärver** basen med `inheritance: true` i sina egna `.coderabbit.yaml` och lägger bara till `path_filters` och `path_instructions`.
 - **En ändring här slår igenom i alla repon** vid nästa granskning. Väg varje ändring mot hur den påverkar alla repon.
 
@@ -43,7 +43,7 @@ Jämför ändrade nycklar mot schemat `https://coderabbit.ai/integrations/schema
 ## Regler för det här repot
 
 - **Gemensamt här, specifikt där:** inställningar som gäller alla repon hör hemma här; riskinstruktioner för enskilda filer hör hemma i respektive repo.
-- **Instruktionerna skrivs på svenska**, korta och konkreta, i samma stil som de befintliga.
+- **Instruktionerna skrivs på engelska**, korta och konkreta, i samma stil som de befintliga. Allt utom dokumentationen är på engelska i alla repon.
 - **Försvaga aldrig granskningen:** slå inte av säkerhetsverktyg, slå inte på automatiska godkännanden och lägg inte till undantag för kod.
 - **Etiketterna** i `labeling_instructions` ska finnas i alla repon. Lägger du till en etikett, säg det i PR:en så att ägaren kan skapa den.
 
