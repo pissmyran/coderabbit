@@ -62,6 +62,12 @@ Compare changed keys with the configuration reference at `https://docs.coderabbi
 - **CodeRabbit:** this repo's own `.coderabbit.yaml` is the central base (`inheritance: false`) and inherits nothing. It governs the review here and is what the other repos inherit.
 - **Sourcery and Codex:** also review, as GitHub apps without their own configuration here, and they review documentation too. Treat their threads like CodeRabbit's.
 
+## Token optimizer
+
+- **What it is:** the platform-skills token optimizer runs in audit mode. `.token-optimizer.yaml` holds the settings, `.token-optimizer/optimize.sh` is the hook script and `.claude/agents/platform-bulk-reader.md` is the cheap reader agent.
+- **What it does:** a `PreToolUse` hook in `.claude/settings.json` logs oversized reads to `.token-optimizer/decisions.log` (git-ignored). It never blocks a read.
+- **Changing it:** switch `mode` to `redirect` only after `.token-optimizer/probe/run-probe.sh` has verified delegation. Set `enabled: false` to turn it off.
+
 ## GitHub from a session
 
 GraphQL is disabled, so `gh pr` and `gh issue` do not work. Use REST:
