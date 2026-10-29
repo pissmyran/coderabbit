@@ -4,7 +4,7 @@
 # `inheritance: true` and add only what is specific to them.
 #
 # Principles:
-# - Target eligible free OSS access; standard Free has PR summaries only.
+# - Use every feature that is free for public repos.
 # - Turn off everything that can cost money or credits.
 # - Turn off output that only adds noise.
 # - Advise, never block: no approvals, no request-changes, no failing statuses,
@@ -12,17 +12,18 @@
 
 language: en-US
 tone_instructions: >-
-  Write concise English. For each finding, name the defect, its consequence,
-  and a concrete fix. Separate confirmed defects from unverified risks.
-  Skip praise, repetition, cosmetic remarks, and authorship guesses.
+  Write short, concrete comments in English. Name the defect, its consequence
+  and a better alternative. Skip
+  praise, repetition and cosmetic remarks.
 
 inheritance: false
-early_access: false
+early_access: true
 enable_free_tier: true
 
 reviews:
-  # Balanced defect reporting; instructions control comment length.
-  profile: chill
+  # Quiet posts the important findings inline and keeps the rest, collapsed,
+  # in the review summary, so nothing is lost and the thread stays readable.
+  profile: quiet
 
   # Advisory only. Auto-approvals also make CodeRabbit request changes for
   # blocking findings, so it stays off.
@@ -34,11 +35,12 @@ reviews:
   high_level_summary_in_walkthrough: false
   high_level_summary_placeholder: "@coderabbitai summary"
   high_level_summary_instructions: |
-    Use at most three short bullets.
+    Write a short summary in English.
     State the main change and its practical consequence.
-    Include breaking changes or required operator actions when present.
-    Do not repeat the title or list every file.
-    Do not claim tests passed without verified evidence.
+    Include breaking changes, migrations, new settings and operational steps when present.
+    Mention documentation that changed or should have changed.
+    Do not claim that tests were run without verified evidence.
+    Do not repeat the title or list every changed file.
 
   # CodeRabbit writes the title only when the PR title contains this
   # placeholder. Open a PR titled `[auto-title]` to get a generated title.
@@ -60,34 +62,33 @@ reviews:
     - style: formatting only.
     - revert: reverts an earlier commit.
     Never use deps or security as standalone types.
-    Preserve existing titles that meet these requirements.
-    Start the description with an imperative verb. Keep the whole title under
-    72 characters, use a scope only when it adds information, and omit a final period.
+    Start the description with an imperative verb, keep it under 72 characters,
+    use a scope only when it adds information, and do not end with a period.
     Do not add unverified effects or issue references.
 
   # Presentation. Keep what informs, drop what only adds noise.
   review_status: true
-  # Hide run details; query live rolling-window quota with
-  # `@coderabbitai rate limit`. Do not invent remaining reviews or an ETA.
+  # Collapsed run details in the walkthrough, including the remaining PR review
+  # quota and when it refills. `@coderabbitai rate limit` shows it on demand.
   review_info: false
   review_details: false
   review_progress: false
   commit_status: false
   fail_commit_status: false
   collapse_walkthrough: false
-  changed_files_summary: false
+  changed_files_summary: true
   sequence_diagrams: false
   estimate_code_review_effort: false
   assess_linked_issues: true
-  related_issues: false
-  related_prs: false
+  related_issues: true
+  related_prs: true
   in_progress_fortune: false
   poem: false
-  enable_prompt_for_ai_agents: false
+  enable_prompt_for_ai_agents: true
 
-  # Omit reviewer suggestions and automatic assignments.
-  suggested_reviewers: false
-  auto_assign_reviewers: false
+  # Reviewers are suggested and assigned from repository history.
+  suggested_reviewers: true
+  auto_assign_reviewers: true
   suggested_reviewers_instructions: []
 
   abort_on_close: true
@@ -99,8 +100,8 @@ reviews:
     include_all_authors: true
     label: "slop"
 
-  # Include drafts and incremental pushes; the wip label pauses automation.
-  # Public repos below 10 stars require manual review triggers.
+  # Drafts are work in progress: they are skipped until marked ready, which saves
+  # the open-source rate limit for reviews that matter. The wip label does the same.
   auto_review:
     enabled: true
     auto_incremental_review: true
@@ -138,9 +139,6 @@ reviews:
         addresses, names, keys, payment links) without repeating them; the repos
         are public and only placeholders and example.com values are allowed.
         Code, comments, docstrings, commit messages and PR text are English.
-        Documentation follows repository-authorized language exceptions.
-        Known AI authorship is not a defect. Keep slop classification separate
-        from concrete defect findings.
         New or changed comments and strings must be English; older Swedish
         comments may stay until someone changes them.
         When behavior, settings or commands change, check that README.md and
@@ -151,23 +149,10 @@ reviews:
       instructions: |
         Documentation. Check that commands, paths, settings and examples match
         the code in this PR, and that links and anchors resolve.
-        Follow language exceptions in the repo's AGENTS.md. In repos that have
+        Follow the language rule in the repo's AGENTS.md. In repos that have
         docs/sv/, that Swedish mirror must change in the same PR as the English
         page it translates; repos without docs/sv/ have no mirror to update.
-        Commands go one per code block, and only what is pasted goes inside it.
-        Flag real personal values; only placeholders and example values are allowed.
-        Do not comment on wording, tone or style unless it makes an instruction
-        wrong or ambiguous.
-
-    - path: "**/.coderabbit.{yaml,yml}"
-      instructions: |
-        Validate the complete YAML against the current CodeRabbit schema.
-        Check inheritance and list merge behavior; local path or label entries
-        replace matching base entries. Do not assume downstream overrides were inspected.
-        Distinguish standard Free summaries from eligible OSS Team features and
-        manual review triggers below 10 stars. YAML cannot grant entitlements
-        or cap spending; account usage billing and separately billed products
-        must stay disabled. Preserve scanners, scope and advisory checks.
+        Commands go one per code block, and only what is pasted goes inside it. Flag real personal values; only placeholders and example values are allowed. Do not comment on wording, tone or style unless it makes an instruction wrong or ambiguous.
 
     - path: "**/AGENTS.md"
       instructions: |
@@ -244,7 +229,7 @@ reviews:
         in both the Swedish and the English section.
 
   # Labels. GitHub's default set plus the shared extras; every label exists in
-  # every repo. Change type: one or more. Review state: at most one, enforced by
+  # every repo. Change type: one or more. Review state: exactly one, enforced by
   # the mutually exclusive group below. Repos add their own labels on top.
   suggested_labels: true
   auto_apply_labels: true
@@ -288,17 +273,16 @@ reviews:
     - label: review-ready
       instructions: >-
         Apply when the latest review found no actionable defects and no review
-        thread is waiting on the author. This is a review assessment, not an
-        approval, proof that checks passed or a change to mergeability.
+        thread is waiting on the author.
     - label: needs-rework
       instructions: >-
-        Apply when the latest review identifies concrete defects with evidence
-        and consequences requiring rework, but the approach itself is sound.
+        Apply when the latest review found defects that must be fixed before
+        merge, but the approach itself is sound.
     - label: rewrite-recommended
       instructions: >-
-        Apply only with concrete evidence that the approach is fundamentally
-        flawed, such as an unsafe design or repeated patching of the same root
-        cause. Explain why rewriting is safer than further fixes.
+        Apply when the approach is fundamentally flawed, for example the wrong
+        layer, an unsafe design or repeated patching of the same root cause, so
+        rewriting is safer than fixing it further.
   mutually_exclusive_groups:
     review-state: ["review-ready", "needs-rework", "rewrite-recommended"]
 
@@ -311,8 +295,8 @@ reviews:
         Conventional Commits with the type feat, fix, docs, refactor, perf,
         test, build, ci, chore, style or revert, as `type: description` or
         `type(scope): description`, in English, stating the main change
-        correctly, with the whole title under 72 characters. A site or
-        documentation change that must be released needs feat or fix. Accept an existing title that meets these requirements.
+        correctly. A site or documentation change that must be released needs
+        feat or fix. Accept an existing title that meets these requirements.
     description:
       mode: warning
     issue_assessment:
@@ -475,3 +459,5 @@ issue_enrichment:
         instructions: "Only when an open issue clearly describes the same problem; link it."
       - label: good first issue
         instructions: "Only for a small, well-scoped change in one area with clear acceptance criteria and no security or sync-format impact."
+      - label: slop
+        instructions: "Use when the PR and code is garbage and doesn't uphold industry standards with all that means."

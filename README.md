@@ -1,26 +1,19 @@
 # coderabbit
 
-The central CodeRabbit configuration for the repos under `pissmyran`. Repositories can inherit `.coderabbit.yaml` from here with `inheritance: true` in their own `.coderabbit.yaml` and add only what applies to each repo: `path_instructions` for its own folders, its own `path_filters`, its own labels, linked repos and any repo-specific checks.
-
-## Free OSS access and billing
-
-This base targets eligible OSS access: open-source projects receive Team features without a paid subscription. Standard Free access provides hosted PR summaries only, not full hosted PR reviews. Public repositories below 10 stars require a manual trigger such as `@coderabbitai review`, even with automatic reviews enabled. See [plans and limits](https://docs.coderabbit.ai/management/plans).
-
-Zero cost also requires account settings: keep usage-based billing and separately billed products, including CodeRabbit Agent and Security Scan, disabled. Confirm OSS eligibility and account billing settings before relying on this base; neither was verified by this repository update. YAML cannot grant entitlements or enforce a spending limit, and `enable_free_tier: true` is not a billing safeguard. Existing review security scanners remain enabled.
+The central CodeRabbit configuration for the repos under `pissmyran`. Every repo inherits `.coderabbit.yaml` from here with `inheritance: true` in its own `.coderabbit.yaml` and adds only what applies to that repo: `path_instructions` for its own folders, its own `path_filters`, its own labels, linked repos and any repo-specific checks.
 
 ## Principles
 
-- **Free OSS review features:** use eligible included review features; `early_access` is off.
+- **Use everything free:** every feature that is free for public repos is on, including `early_access`.
 - **Nothing that costs:** agent features that write commits or PRs (docstrings, unit tests, autofix, fix CI, merge conflicts, simplify, planning) are off, because they can use credits. Their instructions still live under `code_generation`.
-- **Advisory, never blocking:** no automatic approvals, no "request changes", no commit status or check that can fail, and enabled pre-merge checks use `warning`; docstring coverage is off.
-- **Concise output:** the `chill` profile balances defect reporting. Findings name the defect, consequence and fix. The walkthrough stays expanded, though individual service-generated sections may still be collapsed. Repetitive file summaries, related-issue/PR lists, reviewer suggestions, poems, fortunes, sequence diagrams and effort estimates are off. The description summary uses at most three short bullets.
+- **Advisory, never blocking:** no automatic approvals, no "request changes", no commit status or check that can fail, and every pre-merge check is set to `warning`.
+- **Little noise:** the `quiet` profile posts the most important findings inline and keeps the rest collapsed in the summary. Poems, fortunes, sequence diagrams and effort estimates are off.
 
 ## What the base sets
 
 - **Language:** reviews, summaries, titles and instructions in English.
-- **Automation:** request reviews for PRs to the default branch, including drafts, and incremental reviews on new pushes; the `wip` label pauses automatic reviews. Entitlements, manual-trigger requirements and rolling limits still apply. Labels and chat replies are automatic; reviewer suggestions and assignment are off.
-- **Titles and squash commits:** `[auto-title]` explicitly triggers title generation. Preserve valid existing titles. Generated titles follow Conventional Commits, with the whole title under 72 characters. Under this repository's governance, the PR title becomes the squash commit title. The hosted PR schema has no commit-message automation setting; existing commits are not rewritten.
-- **Quota:** run details, review details and progress are hidden; the review status message stays enabled. Use `@coderabbitai rate limit` on demand for current availability. Remaining reviews and the next available review depend on live rolling-window usage; this configuration cannot supply an ETA.
+- **Automation:** a review of every PR to the default branch and every new push (drafts and PRs labeled `wip` are skipped; public repos with fewer than 10 stars may need `@coderabbitai review` as a manual trigger), automatic labels, automatically assigned reviewers, a PR summary, and a PR title when the title contains the placeholder `[auto-title]`.
+- **Quota:** the "Recent review info" section of the summary comment at the top of the PR is updated on every review and states how many included reviews remain this hour. Comment `@coderabbitai rate limit` to see the quota without starting a review.
 - **Review scope:** both code and documentation are reviewed. Only generated output is skipped; lock files stay in scope so the dependency scanners can read them.
 - **Path instructions:** general rules for every file, documentation, agent instructions, `.github/`, JavaScript and TypeScript, Python, Rust, Swift, Kotlin and C#, shell scripts, Docker, Cloudflare configuration and the documentation site.
 - **Runtime rules** (Cloudflare Workers, the SSH clients, the contact tools) live in each repo's own `.coderabbit.yaml`, not here.
@@ -41,12 +34,10 @@ CodeRabbit can read linked repos during a review and warn about changes that bre
 The labels follow GitHub's default set plus a few extras, and every label exists in every repo.
 
 - **Type of change (PR):** `fix`, `feature`, `enhancement`, `chore`, `documentation`, `dependencies`, `security`, `accessibility` and `duplicate`. A PR can have several.
-- **Review state (PR):** `review-ready`, `needs-rework` or `rewrite-recommended`. They form a mutually exclusive group, so a PR has at most one. Rework and rewrite assessments require concrete defect evidence. `review-ready` means the latest review found no actionable defects and no thread awaits the author; it is not approval or proof that checks passed. These labels do not change mergeability.
+- **Review state (PR):** `review-ready`, `needs-rework` or `rewrite-recommended`. They form a mutually exclusive group, so a PR has at most one of them.
 - **Issues:** `bug`, `feature`, `enhancement`, `chore`, `dependencies`, `documentation`, `security`, `accessibility`, `question`, `duplicate` and `good first issue`.
-- **Set by others:** the built-in slop classifier sets `slop`; issue-label instructions cannot customize it. Known AI authorship is not a defect, and slop classification stays separate from defect findings. The author sets `wip`. The owner sets `help wanted`, `invalid` and `wontfix`.
+- **Set by others:** `slop` is set by slop detection and `wip` by the author. The owner sets `help wanted`, `invalid` and `wontfix`.
 
 Repos add their own labels in their own `.coderabbit.yaml`, for example `sync-format` in the Bastion repos.
 
-A change here supplies the base at the next review for repositories using it. This repository sets `inheritance: false`; consumers can retain `inheritance: true` and local overrides. Objects merge deeply, scalars use the child value, and arrays keep child entries first, then unique parent entries. Matching `path`, `label`, `name`, `id` or `key` entries replace the base entry. See [inheritance rules](https://docs.coderabbit.ai/configuration/configuration-inheritance).
-
-Other repositories' overrides and account-level global overrides were not inspected or changed. Use `@coderabbitai configuration` in a consuming PR to inspect the resolved configuration; local and global overrides can change the effective behavior.
+A change here takes effect in every repo at its next review.
