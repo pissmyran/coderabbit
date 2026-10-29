@@ -17,7 +17,7 @@ tone_instructions: >-
   Skip praise, repetition, cosmetic remarks, and authorship guesses.
 
 inheritance: false
-early_access: false
+early_access: true
 enable_free_tier: true
 
 reviews:
@@ -42,7 +42,7 @@ reviews:
 
   # CodeRabbit writes the title only when the PR title contains this
   # placeholder. Open a PR titled `[auto-title]` to get a generated title.
-  auto_title_placeholder: "[auto-title]"
+  auto_title_placeholder: "auto"
   auto_title_instructions: |
     Write the PR title in English following Conventional Commits:
     `type: description` or `type(scope): description`.
@@ -79,15 +79,15 @@ reviews:
   sequence_diagrams: false
   estimate_code_review_effort: false
   assess_linked_issues: true
-  related_issues: false
-  related_prs: false
+  related_issues: true
+  related_prs: true
   in_progress_fortune: false
   poem: false
-  enable_prompt_for_ai_agents: false
+  enable_prompt_for_ai_agents: true
 
   # Omit reviewer suggestions and automatic assignments.
-  suggested_reviewers: false
-  auto_assign_reviewers: false
+  suggested_reviewers: true
+  auto_assign_reviewers: true
   suggested_reviewers_instructions: []
 
   abort_on_close: true
@@ -410,13 +410,13 @@ knowledge_base:
       - "**/AGENTS.md"
   web_search:
     enabled: true
-  learnings: { scope: auto }
-  issues: { scope: auto }
-  pull_requests: { scope: auto }
+  learnings: { scope: global }
+  issues: { scope: global }
+  pull_requests: { scope: global }
   jira: { usage: disabled }
   linear: { usage: disabled }
   mcp: { usage: disabled }
-  automatic_linking_mode: disabled
+  automatic_linking_mode: auto
   linked_repositories: []
 
 # Guidance for generated docstrings and tests. Generation itself is off above,
@@ -447,9 +447,9 @@ issue_enrichment:
     enabled: true
   # Implementation plans run agents and stay off.
   planning:
-    enabled: false
+    enabled: true
     auto_planning:
-      enabled: false
+      enabled: true
   labeling:
     auto_apply_labels: true
     labeling_instructions:
