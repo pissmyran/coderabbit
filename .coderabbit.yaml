@@ -112,7 +112,8 @@ reviews:
     ignore_usernames: []
     ignore_title_keywords: []
 
-  # Review code and documentation. Skip only generated output and lock files.
+  # Review code and documentation. Skip only generated output. Lock files stay
+  # in scope so the dependency scanners can read the resolved versions.
   path_filters:
     - "!**/dist/**"
     - "!**/build/**"
@@ -121,11 +122,6 @@ reviews:
     - "!**/*.min.js"
     - "!**/*.min.css"
     - "!**/*.map"
-    - "!**/package-lock.json"
-    - "!**/pnpm-lock.yaml"
-    - "!**/yarn.lock"
-    - "!**/Cargo.lock"
-    - "!**/Package.resolved"
 
   path_instructions:
     - path: "**/*"
@@ -184,7 +180,7 @@ reviews:
         Labels set by issue forms must exist in the repo's label set.
         Forms must warn against posting secrets or personal data.
 
-    - path: "**/*.{js,mjs,cjs,ts,tsx}"
+    - path: "**/*.{js,jsx,mjs,cjs,ts,tsx}"
       instructions: |
         Check input validation, escaping of untrusted data before it reaches
         HTML, SQL or a shell, unhandled promise rejections, and errors that are
