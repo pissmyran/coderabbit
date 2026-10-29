@@ -154,9 +154,9 @@ reviews:
       instructions: |
         Documentation. Check that commands, paths, settings and examples match
         the code in this PR, and that links and anchors resolve.
-        Follow the language rule in the repo's CLAUDE.md: Swedish-first repos keep
-        an English mirror under docs/eng/ that must change in the same PR as the
-        Swedish page; English-only repos write everything in English.
+        Follow the language rule in the repo's CLAUDE.md. In repos that have
+        docs/eng/, that English mirror must change in the same PR as the Swedish
+        page it translates; repos without docs/eng/ have no mirror to update.
         Commands go one per code block, and only what is pasted goes inside it.
         Flag real personal values; only placeholders and example values are allowed.
         Do not comment on wording, tone or style unless it makes an instruction

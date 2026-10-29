@@ -24,10 +24,10 @@ Den centrala CodeRabbit-konfigurationen för repona under `pissmyran`. Varje rep
 
 ## Länkade repon
 
-CodeRabbit kan läsa länkade repon under granskningen och varna för ändringar som bryter något i ett annat repo. Länkarna sätts i varje repos egen `.coderabbit.yaml` under `knowledge_base.linked_repositories`, inte här.
+CodeRabbit kan läsa länkade repon under granskningen och varna för ändringar som bryter något i ett annat repo. Länkarna hör hemma i varje repos egen `.coderabbit.yaml` under `knowledge_base.linked_repositories`, inte här. Så här ska repona länkas:
 
-- **Bastion:** `bastion`, `bastion_apple`, `bastion_linux`, `bastion_windows` och `bastion_android` länkar till varandra. De är samma klient på olika plattformar och delar synkformatet, som ägs av `bastion_apple`.
-- **Webbtjänsterna:** `dumpen`, `jobb`, `klarsprak` och `politiker` länkar till varandra. De delar mönstret för platshållare, `tools/render.mjs`, Docker, `import-settings.sh` och dokumentationssajten, så en ändring av de delade verktygen ska göras likadant i alla fyra.
+- **Bastion:** `bastion`, `bastion_apple`, `bastion_linux`, `bastion_windows` och `bastion_android` länkas till varandra. De är samma klient på olika plattformar och delar synkformatet, som ägs av `bastion_apple`.
+- **Webbtjänsterna:** `dumpen`, `jobb`, `klarsprak` och `politiker` länkas till varandra. De delar mönstret för platshållare, `tools/render.mjs`, Docker, `import-settings.sh` och dokumentationssajten, så en ändring av de delade verktygen ska göras likadant i alla fyra.
 
 ## Etiketter
 
