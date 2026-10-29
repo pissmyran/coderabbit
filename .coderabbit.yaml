@@ -42,8 +42,9 @@ reviews:
     Do not claim that tests were run without verified evidence.
     Do not repeat the title or list every changed file.
 
-  # Title generation runs when the PR title contains the placeholder.
-  auto_title_placeholder: "@coderabbitai"
+  # CodeRabbit writes the title only when the PR title contains this
+  # placeholder. Open a PR titled `[auto-title]` to get a generated title.
+  auto_title_placeholder: "[auto-title]"
   auto_title_instructions: |
     Write the PR title in English following Conventional Commits:
     `type: description` or `type(scope): description`.
@@ -67,7 +68,9 @@ reviews:
 
   # Presentation. Keep what informs, drop what only adds noise.
   review_status: true
-  review_info: false
+  # Collapsed run details in the walkthrough, including the remaining PR review
+  # quota and when it refills. `@coderabbitai rate limit` shows it on demand.
+  review_info: true
   review_details: false
   review_progress: false
   commit_status: false

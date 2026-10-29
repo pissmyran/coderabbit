@@ -12,7 +12,8 @@ Den centrala CodeRabbit-konfigurationen för repona under `pissmyran`. Varje rep
 ## Vad basen ställer in
 
 - **Språk:** granskningar, sammanfattningar, titlar och instruktioner på engelska.
-- **Automatik:** granskning av varje PR och varje ny push (utkast och PR:er med etiketten `wip` hoppas över), automatiska etiketter, automatiskt tilldelade granskare, PR-sammanfattning, och PR-titel när titeln innehåller `@coderabbitai`.
+- **Automatik:** granskning av varje PR och varje ny push (utkast och PR:er med etiketten `wip` hoppas över), automatiska etiketter, automatiskt tilldelade granskare, PR-sammanfattning, och PR-titel när titeln innehåller platshållaren `[auto-title]`.
+- **Kvot:** sammanfattningskommentaren högst upp i PR:en (walkthrough) uppdateras vid varje granskning och visar hopfällt hur många granskningar som är kvar och när kvoten fylls på. Kommentera `@coderabbitai rate limit` för att se kvoten utan att starta en granskning.
 - **Granskning:** både kod och dokumentation granskas. Bara genererade filer och låsfiler hoppas över.
 - **Instruktioner per sökväg:** allmänna regler för alla filer, dokumentation, agentinstruktioner, `.github/`, JavaScript och TypeScript, Python, Rust, Swift, Kotlin och C#, skalskript, Docker, Cloudflare-konfiguration och dokumentationssajten.
 - **Körmiljöns regler** (Cloudflare Workers, SSH-klienterna, kontaktverktygen) ligger i respektive repos egen `.coderabbit.yaml`, inte här.
