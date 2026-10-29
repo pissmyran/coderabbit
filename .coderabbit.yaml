@@ -458,8 +458,6 @@ issue_enrichment:
       - label: duplicate
         instructions: "Only when an open issue clearly describes the same problem; link it."
       - label: good first issue
-        instructions: "Only for a small, well-scoped change in one area with clear acceptance
-          criteria and no security or sync-format impact."
+        instructions: "Only for a small, well-scoped change in one area with clear acceptance criteria and no security or sync-format impact."
       - label: slop
-        instructions: >-
-          Use when the PR and code is garbage and doesn't uphold industry standards with all that means.
+        instructions: "Use when the PR and code is garbage and doesn't uphold industry standards with all that means."
