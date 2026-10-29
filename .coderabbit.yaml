@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 
-language: sv-SE
+language: en-US
 tone_instructions: >-
-  Skriv kommentarer och sammanfattningar kort på svenska.
-  Skriv PR-titlar på engelska. Behåll identifierare och etiketter.
-  Beskriv konkreta fel, konsekvenser och åtgärder.
-  Undvik upprepningar, beröm och kosmetiska förslag.
+  Write short comments and summaries in English.
+  Keep identifiers and labels as they are.
+  Describe concrete defects, consequences and fixes.
+  Avoid repetition, praise and cosmetic suggestions.
 
-# Central bas. Ärv inte äldre inställningar från UI.
+# Central base. Do not inherit older settings from the UI.
 inheritance: false
 early_access: false
 enable_free_tier: true
@@ -18,35 +18,35 @@ reviews:
   auto_approvals:
     enabled: false
 
-  # Kort sammanfattning i PR-beskrivningen.
+  # Short summary in the PR description.
   high_level_summary: true
   high_level_summary_in_walkthrough: false
   high_level_summary_placeholder: "@coderabbitai summary"
   high_level_summary_instructions: |
-    Skriv en kort sammanfattning på svenska.
-    Beskriv huvudändringen och dess praktiska konsekvens.
-    Ta med kompatibilitetsbrott, migreringar och driftkrav när de finns.
-    Påstå inte att tester har körts utan verifierat underlag.
-    Upprepa inte titeln eller en lista över alla ändrade filer.
+    Write a short summary in English.
+    Describe the main change and its practical consequence.
+    Include breaking changes, migrations and operational requirements when present.
+    Do not claim that tests were run without verified evidence.
+    Do not repeat the title or list every changed file.
 
-  # Titelgenerering aktiveras med markören i PR-titeln.
+  # Title generation is triggered by the placeholder in the PR title.
   auto_title_placeholder: "@coderabbitai"
   auto_title_instructions: |
-    Skriv en kort PR-titel på engelska enligt Conventional Commits.
-    Använd type: description eller type(scope): description.
-    Tillåtna typer är feat, fix, docs, refactor, perf, test,
-    build, ci, chore, style och revert.
-    Använd feat för ny funktionalitet och fix för felrättningar.
-    Använd chore(deps) för vanliga beroendeuppdateringar.
-    Använd fix med relevant scope för säkerhetsfixar.
-    Använd inte deps eller security som fristående typer.
-    Beskriv huvudändringen med ett verb i imperativ.
-    Sikta på färre än 72 tecken utan att förlora viktig information.
-    Använd scope endast när det tillför information.
-    Lägg inte till obestyrkta effekter eller ärendereferenser.
-    Avsluta inte titeln med punkt.
+    Write a short PR title in English following Conventional Commits.
+    Use type: description or type(scope): description.
+    Allowed types are feat, fix, docs, refactor, perf, test,
+    build, ci, chore, style and revert.
+    Use feat for new functionality and fix for bug fixes.
+    Use chore(deps) for routine dependency updates.
+    Use fix with a relevant scope for security fixes.
+    Do not use deps or security as standalone types.
+    Describe the main change with an imperative verb.
+    Aim for fewer than 72 characters without losing key information.
+    Use a scope only when it adds information.
+    Do not add unverified effects or issue references.
+    Do not end the title with a period.
 
-  # Begränsa statusmeddelanden och presentationsbrus.
+  # Limit status messages and presentation noise.
   review_status: false
   review_info: false
   review_details: false
@@ -68,8 +68,12 @@ reviews:
   auto_assign_reviewers: false
   abort_on_close: true
 
+  # Flags low-quality AI-generated PRs with a Walkthrough warning and the slop label.
+  # include_all_authors also covers same-repo branches, where agents open their PRs.
   slop_detection:
-    enabled: false
+    enabled: true
+    include_all_authors: true
+    label: "slop"
 
   auto_review:
     enabled: true
@@ -80,7 +84,7 @@ reviews:
     ignore_usernames: []
     ignore_title_keywords: []
 
-  # Granska övriga filer utan en repospecifik inkluderingslista.
+  # Review all other files without a repo-specific include list.
   path_filters:
     - "!**/docs/**"
     - "!**/doc/**"
@@ -92,69 +96,88 @@ reviews:
   path_instructions:
     - path: "**/*"
       instructions: |
-        Rapportera konkreta fel med tydlig konsekvens:
-        säkerhetsbrister, felaktigt beteende, dataförlust,
-        trasiga byggen eller driftsättningar och betydande
-        prestanda- eller kostnadsproblem.
-        Kontrollera befintliga skydd och relevanta anropare.
-        Beskriv ett specifikt felscenario.
-        Skilj bekräftade fel från saknat verifieringsunderlag.
-        Upprepa inte samma grundfel i flera kommentarer.
-        Avstå från kosmetiska förslag, namnpreferenser
-        och allmänna refaktoreringsförslag.
-        Begär tester när en konkret ändrad risk behöver täckas.
-        Försvaga aldrig tester, behörigheter eller mergekontroller.
-        Flagga läckta hemligheter utan att återge hemliga värden.
+        Report concrete defects with a clear consequence:
+        security flaws, incorrect behavior, data loss,
+        broken builds or deployments, and significant
+        performance or cost problems.
+        Check existing safeguards and relevant callers.
+        Describe a specific failure scenario.
+        Separate confirmed defects from missing verification.
+        Do not repeat the same root cause in several comments.
+        Skip cosmetic suggestions, naming preferences
+        and general refactoring suggestions.
+        Ask for tests when a concrete changed risk needs coverage.
+        Never weaken tests, permissions or merge controls.
+        Flag leaked secrets without repeating the secret values.
 
     - path: ".github/**"
       instructions: |
-        Prioritera tokenbehörigheter, hemligheter och exekvering
-        av obetrodd PR-kod.
-        Kräv inte egna CodeQL-workflows när default setup används.
-        Kräv inte ci.yaml, dependabot.yaml eller språkfiler
-        enbart för att dessa filer saknas.
-        Bedöm befintliga skydd och ändringens konkreta risker.
+        Prioritize token permissions, secrets and execution
+        of untrusted PR code.
+        Do not require custom CodeQL workflows when default setup is used.
+        Do not require ci.yaml, dependabot.yaml or language files
+        just because they are missing.
+        Assess existing safeguards and the change's concrete risks.
 
-  # Gemensam etikettlista. Säkerställ att etiketterna finns i repona.
+  # Shared label list. Make sure the labels exist in every repo.
   suggested_labels: true
   auto_apply_labels: true
   labeling_instructions:
     - label: fix
-      instructions: "Huvudändringen rättar ett konkret fel."
+      instructions: "The main change fixes a concrete defect."
 
     - label: feature
-      instructions: "Huvudändringen tillför en ny förmåga."
+      instructions: "The main change adds a new capability."
 
     - label: enhancement
-      instructions: "Förbättrar befintlig funktion utan att främst rätta ett fel."
+      instructions: "Improves existing functionality without mainly fixing a defect."
 
     - label: chore
-      instructions: "Rutinunderhåll som inte främst gäller beroenden eller dokumentation."
+      instructions: "Routine maintenance not mainly about dependencies or documentation."
 
     - label: documentation
-      instructions: "Huvudsyftet är dokumentation eller användarhjälp."
+      instructions: "The main purpose is documentation or user help."
 
     - label: dependencies
-      instructions: "Ändrar projektberoenden, runtimeversioner eller containerbaser."
+      instructions: "Changes project dependencies, runtime versions or container base images."
 
     - label: security
       instructions: >-
-        Ändrar ett säkerhetsskydd eller åtgärdar en dokumenterad säkerhetsrisk.
-        En vanlig beroendeuppdatering räcker inte.
+        Changes a security control or fixes a documented security risk.
+        A routine dependency update is not enough.
 
     - label: accessibility
-      instructions: "Åtgärdar en konkret tillgänglighetsbarriär i användargränssnittet."
+      instructions: "Fixes a concrete accessibility barrier in the user interface."
 
-  # Rådgivande kontroller.
+    # Review state. CodeRabbit can only add labels, never remove them, so whoever
+    # fixes the findings removes a state label that no longer applies.
+    - label: review-ready
+      instructions: >-
+        The latest review found no actionable defects and no open
+        review threads remain. Do not apply it while needs-rework or
+        rewrite-recommended is on the PR.
+
+    - label: needs-rework
+      instructions: >-
+        The latest review found defects that must be fixed before merge,
+        but the approach itself is sound.
+
+    - label: rewrite-recommended
+      instructions: >-
+        The approach is fundamentally flawed, for example wrong layer,
+        unsafe design or repeated patching of the same root cause,
+        so rewriting is safer than fixing it further.
+
+  # Advisory checks.
   pre_merge_checks:
     title:
       mode: warning
       requirements: >-
-        Följ Conventional Commits med typen feat, fix, docs,
-        refactor, perf, test, build, ci, chore, style eller revert.
-        Använd type: description eller type(scope): description.
-        Skriv beskrivningen på engelska och ange huvudändringen korrekt.
-        Acceptera en befintlig titel som uppfyller kraven.
+        Follow Conventional Commits with the type feat, fix, docs,
+        refactor, perf, test, build, ci, chore, style or revert.
+        Use type: description or type(scope): description.
+        Write the description in English and state the main change correctly.
+        Accept an existing title that meets these requirements.
     description:
       mode: warning
     docstrings:
@@ -163,7 +186,7 @@ reviews:
       mode: "off"
     custom_checks: []
 
-  # Stäng av kodgenerering och agentbaserade tillägg.
+  # Disable code generation and agent-based add-ons.
   finishing_touches:
     docstrings: {enabled: false}
     unit_tests: {enabled: false}
@@ -176,14 +199,14 @@ reviews:
   post_merge_actions: []
 
   tools:
-    # Behåll kontroller som inte ersätts av CodeQL.
+    # Keep checks that CodeQL does not replace.
     actionlint: {enabled: true}
     shellcheck: {enabled: true}
 
-    # Undvik extra kommentarer om andra GitHub-kontroller.
+    # Avoid extra comments about other GitHub checks.
     github-checks: {enabled: false}
 
-    # Begränsa överlappande lint- och stilkommentarer.
+    # Limit overlapping lint and style comments.
     biome: {enabled: false}
     eslint: {enabled: false}
     oxc: {enabled: false}
@@ -196,7 +219,7 @@ reviews:
     sqlfluff: {enabled: false}
     squawk: {enabled: false}
 
-    # Behåll säkerhetsanalys för relevanta filer.
+    # Keep security analysis for relevant files.
     gitleaks: {enabled: true}
     trufflehog: {enabled: true}
     osvScanner: {enabled: true}
@@ -211,7 +234,7 @@ chat:
     linear: {usage: disabled}
 
 knowledge_base:
-  # Använd explicita path_instructions i stället för gamla regelfiler.
+  # Use explicit path_instructions instead of old rule files.
   code_guidelines:
     enabled: false
 
@@ -242,28 +265,28 @@ issue_enrichment:
     auto_apply_labels: true
     labeling_instructions:
       - label: bug
-        instructions: "Konkreta fel, krascher eller regressioner."
+        instructions: "Concrete defects, crashes or regressions."
 
       - label: feature
-        instructions: "Önskemål om en ny förmåga."
+        instructions: "Request for a new capability."
 
       - label: enhancement
-        instructions: "Förbättring av befintlig funktion, inte en felrapport."
+        instructions: "Improvement of existing functionality, not a bug report."
 
       - label: chore
-        instructions: "Rutinunderhåll som inte främst gäller beroenden eller dokumentation."
+        instructions: "Routine maintenance not mainly about dependencies or documentation."
 
       - label: dependencies
-        instructions: "Ärendet gäller ett projektberoende eller en runtimeversion."
+        instructions: "The issue concerns a project dependency or runtime version."
 
       - label: documentation
-        instructions: "Ärendet gäller dokumentation eller användarinstruktioner."
+        instructions: "The issue concerns documentation or user instructions."
 
       - label: security
-        instructions: "Konkret beskriven säkerhetsrisk. Återge inte hemligheter."
+        instructions: "A concretely described security risk. Do not repeat secrets."
 
       - label: accessibility
-        instructions: "Konkret tillgänglighetsbarriär i användargränssnittet."
+        instructions: "A concrete accessibility barrier in the user interface."
 
       - label: question
-        instructions: "Ärendet efterfrågar främst information, inte en kodändring."
+        instructions: "The issue mainly asks for information, not a code change."
