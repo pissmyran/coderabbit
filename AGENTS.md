@@ -15,7 +15,7 @@ Compare changed keys with the [configuration reference](https://docs.coderabbit.
 
 ## Rules
 
-- `.coderabbit.yaml` is the review base for every repository, and this repository inherits nothing (`inheritance: false`). Everything free for public repositories is on (including `early_access`), everything that can cost credits is off, and CodeRabbit is advisory and never blocks. `README.md` describes what the base sets.
+- `.coderabbit.yaml` is the review base for every repository, and this repository inherits nothing (`inheritance: false`). Everything free for public repositories is on, everything that can cost credits is off, and CodeRabbit is advisory and never blocks. `README.md` describes what the base sets.
 - The repositories inherit it with `inheritance: true` and add only what is specific to them: `path_instructions`, `path_filters`, labels, checks and linked repositories. Lists merge with the repository's entries first, and an entry with the same `path` or `label` replaces the base's.
 - **A change here takes effect in every repository** at its next review. Weigh each change against all of them.
 - Settings that apply to every repository belong here; instructions for specific files belong in each repository. Write instructions short and concrete, in the style of the existing ones.
