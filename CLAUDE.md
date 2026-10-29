@@ -71,18 +71,72 @@ Compare changed keys with the configuration reference at `https://docs.coderabbi
 - **Local changes:** `optimize.sh` differs from the skill's original in two places: it never writes command text to the log, and it replaces control characters and caps field length in `log_line`. The hook command starts from `$CLAUDE_PROJECT_DIR`. Reapply these if the script is updated from the skill.
 - **Changing it:** switch `mode` to `redirect` only after `.token-optimizer/probe/run-probe.sh` has verified delegation. Set `enabled: false` to turn it off.
 
-## GitHub from a session
+## GitHub from the sandbox
 
-GraphQL is disabled, so `gh pr` and `gh issue` do not work. Use REST:
+The sandbox injects the agent's fine-grained token for `github.com` and `api.github.com`, so `git` and `gh` work as usual. The token reaches only this agent's repositories.
 
-- Open a PR: `gh api repos/pissmyran/coderabbit/pulls -f base=main -f head=<branch> -f title='…' -f body='…'`
-- PR from a branch: `gh api 'repos/pissmyran/coderabbit/pulls?head=pissmyran:<branch>&state=open'`
-- Issue: `gh api repos/pissmyran/coderabbit/issues/<n>` and `…/issues/<n>/comments`
-- Review threads: `gh api repos/pissmyran/coderabbit/pulls/<n>/ccr/review_threads`
-- Reply in a thread: `gh api repos/pissmyran/coderabbit/pulls/<n>/comments/<id>/replies -f body='…'`
-- Resolve a thread: `gh api -X POST repos/pissmyran/coderabbit/pulls/<n>/ccr/comments/<id>/resolve`
-- Checks: `gh api repos/pissmyran/coderabbit/commits/<sha>/check-runs`
-- Enable auto-merge: `gh api -X PUT repos/pissmyran/coderabbit/pulls/<n>/ccr/auto_merge -f merge_method=squash`
-- If the PR is already mergeable (auto-merge is then refused), squash-merge directly: `gh api -X PUT repos/pissmyran/coderabbit/pulls/<n>/merge -f merge_method=squash`
-- Close a PR: `gh api -X PATCH repos/pissmyran/coderabbit/pulls/<n> -f state=closed`
-- Delete a branch: GitHub deletes the branch on merge. A closed PR's branch is deleted with `git push origin --delete <branch>` (the API route is blocked).
+Open a pull request:
+
+```sh
+gh pr create --base main --title '<title>' --body '<body>'
+```
+
+Show the checks on a pull request:
+
+```sh
+gh pr checks <n>
+```
+
+List the inline review comments (each `id` is used for replies):
+
+```sh
+gh api repos/pissmyran/coderabbit/pulls/<n>/comments
+```
+
+Reply to a review comment:
+
+```sh
+gh api repos/pissmyran/coderabbit/pulls/<n>/comments/<id>/replies -f body='<reply>'
+```
+
+List the review threads with their node IDs (`id`) and first comment:
+
+```sh
+gh api graphql -f query='query { repository(owner: "pissmyran", name: "coderabbit") { pullRequest(number: <n>) { reviewThreads(first: 100) { nodes { id isResolved comments(first: 1) { nodes { databaseId body } } } } } } }'
+```
+
+Resolve a review thread, using the thread's node ID, not the comment ID:
+
+```sh
+gh api graphql -f query='mutation($id: ID!) { resolveReviewThread(input: {threadId: $id}) { thread { isResolved } } }' -f id='<thread-id>'
+```
+
+Enable auto-merge and delete the branch after merge:
+
+```sh
+gh pr merge <n> --auto --squash --delete-branch
+```
+
+Close a pull request and delete its branch:
+
+```sh
+gh pr close <n> --delete-branch
+```
+
+List Dependabot alerts:
+
+```sh
+gh api repos/pissmyran/coderabbit/dependabot/alerts
+```
+
+List code scanning alerts:
+
+```sh
+gh api repos/pissmyran/coderabbit/code-scanning/alerts
+```
+
+List secret scanning alerts:
+
+```sh
+gh api repos/pissmyran/coderabbit/secret-scanning/alerts
+```
