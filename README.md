@@ -19,7 +19,7 @@ The central CodeRabbit configuration for the repos under `pissmyran`. Every repo
 - **Runtime rules** (Cloudflare Workers, the SSH clients, the contact tools) live in each repo's own `.coderabbit.yaml`, not here.
 - **Pre-merge checks (advisory):** the title follows Conventional Commits, the description, linked issues, "Docs in the same PR" and "No personal values".
 - **Tools:** security scanners (gitleaks, trufflehog, osv-scanner, trivy, opengrep, semgrep, presidio, skillspector, checkov, zizmor, ast-grep) and linters for the repos' languages (actionlint, shellcheck, hadolint, dotenv-linter, ruff, clippy, swiftlint, detekt). Linters that overlap Prettier or only add style noise are off.
-- **Knowledge:** CodeRabbit reads the repo's `CLAUDE.md` and `AGENTS.md` as review criteria, searches the web and learns from earlier reviews.
+- **Knowledge:** CodeRabbit reads the repo's `AGENTS.md` as review criteria, searches the web and learns from earlier reviews.
 - **Issues:** new issues are enriched with context and labeled automatically.
 
 ## Linked repos

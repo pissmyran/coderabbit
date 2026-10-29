@@ -142,14 +142,14 @@ reviews:
         New or changed comments and strings must be English; older Swedish
         comments may stay until someone changes them.
         When behavior, settings or commands change, check that README.md and
-        CLAUDE.md change in the same PR, and docs/ too in repos that have it.
+        AGENTS.md change in the same PR, and docs/ too in repos that have it.
         Flag new version pins; existing pins kept current by Renovate are fine.
 
     - path: "**/*.{md,mdx}"
       instructions: |
         Documentation. Check that commands, paths, settings and examples match
         the code in this PR, and that links and anchors resolve.
-        Follow the language rule in the repo's CLAUDE.md. In repos that have
+        Follow the language rule in the repo's AGENTS.md. In repos that have
         docs/eng/, that English mirror must change in the same PR as the Swedish
         page it translates; repos without docs/eng/ have no mirror to update.
         Commands go one per code block, and only what is pasted goes inside it.
@@ -157,12 +157,11 @@ reviews:
         Do not comment on wording, tone or style unless it makes an instruction
         wrong or ambiguous.
 
-    - path: "**/{CLAUDE,AGENTS}.md"
+    - path: "**/AGENTS.md"
       instructions: |
-        Agent instructions. The core rules block between the core-rules markers
-        is a verbatim copy of the governance document in the .github repo, as
-        named in the repo's own CLAUDE.md; flag any edit inside it that is not
-        a sync from that source.
+        Agent instructions. Shared rules live only in the governance documents
+        in the .github repo; flag any repeat of them here. The file holds only
+        what is specific to this repo. AGENTS.md only imports AGENTS.md.
         Check that commands listed under Commands actually exist in the repo.
 
     - path: ".github/**"
@@ -201,7 +200,7 @@ reviews:
         Doc comments are in English, in the language's own format, and state
         purpose, parameters, return value, errors and side effects. Flag comments
         that are stale, misleading or in another language. Flag a missing doc
-        comment only where the repo's CLAUDE.md or the language convention asks
+        comment only where the repo's AGENTS.md or the language convention asks
         for one.
 
     - path: "**/{*.test.*,*.spec.*,test_*.py,*_test.py,*_test.rs,*Test.kt,*Tests.swift,*Tests.cs,tests/**}"
@@ -315,7 +314,7 @@ reviews:
         mode: warning
         instructions: >-
           Pass when changes to behavior, settings, commands or deployment come
-          with matching updates to README.md, CLAUDE.md and the affected pages
+          with matching updates to README.md, AGENTS.md and the affected pages
           under docs/ (only when the repo has a docs/ directory), or when no such
           change was made. Fail and name the missing files otherwise.
       - name: "No personal values"
@@ -392,11 +391,10 @@ chat:
 
 knowledge_base:
   opt_out: false
-  # Reads the repos' CLAUDE.md and AGENTS.md as review criteria.
+  # Reads the repos' AGENTS.md as review criteria.
   code_guidelines:
     enabled: true
     filePatterns:
-      - "**/CLAUDE.md"
       - "**/AGENTS.md"
   web_search:
     enabled: true
