@@ -10,15 +10,15 @@ Zero cost also requires account settings: keep usage-based billing and separatel
 
 ## Principles
 
-- **Free OSS review features:** use eligible included review features; `early_access` is off.
-- **Nothing that costs:** agent features that write commits or PRs (docstrings, unit tests, autofix, fix CI, merge conflicts, simplify, planning) are off, because they can use credits. Their instructions still live under `code_generation`.
+- **Free OSS review features:** use eligible included review features; `early_access` is on to get the early-access review features.
+- **Nothing that costs:** agent features that write commits or PRs (docstrings, unit tests, autofix, fix CI, merge conflicts, simplify) are off, because they can use credits. Their instructions still live under `code_generation`. Implementation plans for new issues are on by choice.
 - **Advisory, never blocking:** no automatic approvals, no "request changes", no commit status or check that can fail, and enabled pre-merge checks use `warning`; docstring coverage is off.
-- **Concise output:** the `chill` profile balances defect reporting. Findings name the defect, consequence and fix. The walkthrough stays expanded, though individual service-generated sections may still be collapsed. Repetitive file summaries, related-issue/PR lists, reviewer suggestions, poems, fortunes, sequence diagrams and effort estimates are off. The description summary uses at most three short bullets.
+- **Concise output:** the `chill` profile balances defect reporting. Findings name the defect, consequence and fix. The walkthrough stays expanded, though individual service-generated sections may still be collapsed. Repetitive file summaries, poems, fortunes, sequence diagrams and effort estimates are off. The description summary uses at most three short bullets.
 
 ## What the base sets
 
 - **Language:** reviews, summaries, titles and instructions in English.
-- **Automation:** request reviews for PRs to the default branch, including drafts, and incremental reviews on new pushes; the `wip` label pauses automatic reviews. Entitlements, manual-trigger requirements and rolling limits still apply. Labels and chat replies are automatic; reviewer suggestions and assignment are off.
+- **Automation:** request reviews for PRs to the default branch, including drafts, and incremental reviews on new pushes; the `wip` label pauses automatic reviews. Entitlements, manual-trigger requirements and rolling limits still apply. Labels and chat replies are automatic; reviewer suggestions, related issue and PR lists, and reviewer assignment are on.
 - **Titles and squash commits:** `[auto-title]` explicitly triggers title generation. Preserve valid existing titles. Generated titles follow Conventional Commits, with the whole title under 72 characters. Under this repository's governance, the PR title becomes the squash commit title. The hosted PR schema has no commit-message automation setting; existing commits are not rewritten.
 - **Quota:** run details, review details and progress are hidden; the review status message stays enabled. Use `@coderabbitai rate limit` on demand for current availability. Remaining reviews and the next available review depend on live rolling-window usage; this configuration cannot supply an ETA.
 - **Review scope:** both code and documentation are reviewed. Only generated output is skipped; lock files stay in scope so the dependency scanners can read them.
@@ -27,7 +27,7 @@ Zero cost also requires account settings: keep usage-based billing and separatel
 - **Pre-merge checks (advisory):** the title follows Conventional Commits, the description, linked issues, "Docs in the same PR" and "No personal values".
 - **Tools:** security scanners (gitleaks, trufflehog, osv-scanner, trivy, opengrep, semgrep, presidio, skillspector, checkov, zizmor, ast-grep) and linters for the repos' languages (actionlint, shellcheck, hadolint, dotenv-linter, ruff, clippy, swiftlint, detekt). Linters that overlap Prettier or only add style noise are off.
 - **Knowledge:** CodeRabbit reads the repo's `AGENTS.md` as review criteria, searches the web and learns from earlier reviews.
-- **Issues:** new issues are enriched with context and labeled automatically.
+- **Issues:** new issues are enriched with context, labeled and given an implementation plan automatically.
 
 ## Linked repos
 
