@@ -26,8 +26,8 @@ De gemensamma reglerna för alla repon finns i [STYRNING.md](https://github.com/
 
 ## Om repot
 
-- **`.coderabbit.yaml`** är basen för granskningen i alla repon: engelska kommentarer, tyst profil, slop-detektion med etiketten `slop`, inga automatiska godkännanden, säkerhetsverktygen (gitleaks, trufflehog, osv-scanner, trivy, zizmor) på och dokumentationen (`docs/`, `*.md`) undantagen.
-- **Repona ärver** basen med `inheritance: true` i sina egna `.coderabbit.yaml` och lägger bara till `path_filters` och `path_instructions`.
+- **`.coderabbit.yaml`** är basen för granskningen i alla repon: allt som är gratis för publika repon är på (även `early_access`), allt som kan kosta krediter är av, och CodeRabbit är rådgivande och blockerar aldrig. README.md beskriver vad basen ställer in.
+- **Repona ärver** basen med `inheritance: true` i sina egna `.coderabbit.yaml` och lägger bara till det repospecifika: `path_instructions` för egna mappar, egna `path_filters`, egna etiketter och egna kontroller. Listor slås ihop med repots poster först, och en post med samma `path` eller `label` i repot ersätter basens.
 - **En ändring här slår igenom i alla repon** vid nästa granskning. Väg varje ändring mot hur den påverkar alla repon.
 
 ## Kommandon
@@ -44,8 +44,10 @@ Jämför ändrade nycklar mot schemat `https://coderabbit.ai/integrations/schema
 
 - **Gemensamt här, specifikt där:** inställningar som gäller alla repon hör hemma här; riskinstruktioner för enskilda filer hör hemma i respektive repo.
 - **Instruktionerna skrivs på engelska**, korta och konkreta, i samma stil som de befintliga. Allt utom dokumentationen är på engelska i alla repon.
-- **Försvaga aldrig granskningen:** slå inte av säkerhetsverktyg, slå inte på automatiska godkännanden och lägg inte till undantag för kod.
-- **Etiketterna** i `labeling_instructions` ska finnas i alla repon. Lägger du till en etikett, säg det i PR:en så att ägaren kan skapa den. CodeRabbit kan bara sätta etiketter, aldrig ta bort dem; den som rättar fynden tar bort en granskningsetikett (`review-ready`, `needs-rework`, `rewrite-recommended`) som inte längre stämmer.
+- **Försvaga aldrig granskningen:** slå inte av säkerhetsverktyg och lägg inte till undantag för kod.
+- **Aldrig blockerande:** slå inte på automatiska godkännanden, `fail_commit_status` eller kontroller i läget `error`.
+- **Noll kronor:** slå inte på `finishing_touches` eller `issue_enrichment.planning`; de kan dra krediter. Instruktionerna under `code_generation` får finnas kvar.
+- **Etiketterna** i `labeling_instructions` ska finnas i alla repon. Lägger du till en etikett, säg det i PR:en så att ägaren kan skapa den. Granskningslägena `review-ready`, `needs-rework` och `rewrite-recommended` är en ömsesidigt uteslutande grupp (`mutually_exclusive_groups`).
 
 ## Granskning i det här repot
 

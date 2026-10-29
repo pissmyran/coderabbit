@@ -1,292 +1,456 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# Central base for every repo under this account. Repos inherit it with
+# `inheritance: true` and add only what is specific to them.
+#
+# Principles:
+# - Use every feature that is free for public repos.
+# - Turn off everything that can cost money or credits.
+# - Turn off output that only adds noise.
+# - Advise, never block: no approvals, no request-changes, no failing statuses,
+#   every pre-merge check is a warning.
 
 language: en-US
 tone_instructions: >-
-  Write short comments and summaries in English.
-  Keep identifiers and labels as they are.
-  Describe concrete defects, consequences and fixes.
-  Avoid repetition, praise and cosmetic suggestions.
+  Write short, concrete comments in English. Name the defect, its consequence
+  and a better alternative. Keep identifiers and labels as they are. Skip
+  praise, repetition and cosmetic remarks.
 
-# Central base. Do not inherit older settings from the UI.
 inheritance: false
-early_access: false
+early_access: true
 enable_free_tier: true
 
 reviews:
+  # Quiet posts the important findings inline and keeps the rest, collapsed,
+  # in the review summary, so nothing is lost and the thread stays readable.
   profile: quiet
 
+  # Advisory only. Auto-approvals also make CodeRabbit request changes for
+  # blocking findings, so it stays off.
   auto_approvals:
     enabled: false
 
-  # Short summary in the PR description.
+  # Summary in the PR description.
   high_level_summary: true
   high_level_summary_in_walkthrough: false
   high_level_summary_placeholder: "@coderabbitai summary"
   high_level_summary_instructions: |
     Write a short summary in English.
-    Describe the main change and its practical consequence.
-    Include breaking changes, migrations and operational requirements when present.
+    State the main change and its practical consequence.
+    Include breaking changes, migrations, new settings and operational steps when present.
+    Mention documentation that changed or should have changed.
     Do not claim that tests were run without verified evidence.
     Do not repeat the title or list every changed file.
 
-  # Title generation is triggered by the placeholder in the PR title.
+  # Title generation runs when the PR title contains the placeholder.
   auto_title_placeholder: "@coderabbitai"
   auto_title_instructions: |
-    Write a short PR title in English following Conventional Commits.
-    Use type: description or type(scope): description.
-    Allowed types are feat, fix, docs, refactor, perf, test,
-    build, ci, chore, style and revert.
-    Use feat for new functionality and fix for bug fixes.
-    Use chore(deps) for routine dependency updates.
-    Use fix with a relevant scope for security fixes.
-    Do not use deps or security as standalone types.
-    Describe the main change with an imperative verb.
-    Aim for fewer than 72 characters without losing key information.
-    Use a scope only when it adds information.
+    Write the PR title in English following Conventional Commits:
+    `type: description` or `type(scope): description`.
+    The title becomes the squash commit on main and drives releases,
+    so pick the type by the main user-visible effect:
+    - feat: new functionality or a site or documentation change that must be released.
+    - fix: corrects a defect, including security fixes (use a scope such as fix(auth)).
+    - docs: documentation only, with no release needed.
+    - refactor: restructures code without changing behavior.
+    - perf: improves performance without changing behavior.
+    - test: adds or changes tests only.
+    - build: build system, packaging, Docker images or dependencies that affect the build.
+    - ci: CI configuration (workflows are owner-managed; describe, do not change them).
+    - chore: routine maintenance; use chore(deps) for routine dependency updates.
+    - style: formatting only.
+    - revert: reverts an earlier commit.
+    Never use deps or security as standalone types.
+    Start the description with an imperative verb, keep it under 72 characters,
+    use a scope only when it adds information, and do not end with a period.
     Do not add unverified effects or issue references.
-    Do not end the title with a period.
 
-  # Limit status messages and presentation noise.
-  review_status: false
+  # Presentation. Keep what informs, drop what only adds noise.
+  review_status: true
   review_info: false
   review_details: false
   review_progress: false
   commit_status: false
   fail_commit_status: false
   collapse_walkthrough: true
-  changed_files_summary: false
+  changed_files_summary: true
   sequence_diagrams: false
   estimate_code_review_effort: false
-  assess_linked_issues: false
-  related_issues: false
-  related_prs: false
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
   in_progress_fortune: false
   poem: false
-  enable_prompt_for_ai_agents: false
+  enable_prompt_for_ai_agents: true
 
-  suggested_reviewers: false
-  auto_assign_reviewers: false
+  # Reviewers are suggested and assigned from repository history.
+  suggested_reviewers: true
+  auto_assign_reviewers: true
+  suggested_reviewers_instructions: []
+
   abort_on_close: true
 
-  # Flags low-quality AI-generated PRs with a Walkthrough warning and the slop label.
+  # Flags low-quality AI-generated PRs with a walkthrough warning and the slop label.
   # include_all_authors also covers same-repo branches, where agents open their PRs.
   slop_detection:
     enabled: true
     include_all_authors: true
     label: "slop"
 
+  # Drafts are work in progress: they are skipped until marked ready, which saves
+  # the open-source rate limit for reviews that matter. The wip label does the same.
   auto_review:
     enabled: true
     auto_incremental_review: true
+    auto_pause_after_reviewed_commits: 0
     drafts: false
     base_branches: []
     labels: ["!wip"]
     ignore_usernames: []
     ignore_title_keywords: []
 
-  # Review all other files without a repo-specific include list.
+  # Review code and documentation. Skip only generated output and lock files.
   path_filters:
-    - "!**/docs/**"
-    - "!**/doc/**"
-    - "!**/*.md"
-    - "!**/*.mdx"
-    - "!**/*.rst"
-    - "!**/*.adoc"
+    - "!**/dist/**"
+    - "!**/build/**"
+    - "!**/site/**"
+    - "!**/node_modules/**"
+    - "!**/*.min.js"
+    - "!**/*.min.css"
+    - "!**/*.map"
+    - "!**/package-lock.json"
+    - "!**/pnpm-lock.yaml"
+    - "!**/yarn.lock"
+    - "!**/Cargo.lock"
+    - "!**/Package.resolved"
+    - "!**/gradle/wrapper/**"
 
   path_instructions:
     - path: "**/*"
       instructions: |
-        Report concrete defects with a clear consequence:
-        security flaws, incorrect behavior, data loss,
-        broken builds or deployments, and significant
-        performance or cost problems.
-        Check existing safeguards and relevant callers.
-        Describe a specific failure scenario.
+        Report concrete defects with a clear consequence: security flaws,
+        incorrect behavior, data loss, broken builds or deployments, and
+        significant performance or cost problems.
+        Check existing safeguards and relevant callers before reporting.
+        Describe a specific failure scenario and what should be done instead.
         Separate confirmed defects from missing verification.
         Do not repeat the same root cause in several comments.
-        Skip cosmetic suggestions, naming preferences
-        and general refactoring suggestions.
+        Skip cosmetic suggestions, naming preferences and general refactoring.
         Ask for tests when a concrete changed risk needs coverage.
-        Never weaken tests, permissions or merge controls.
-        Flag leaked secrets without repeating the secret values.
+        Never suggest weakening tests, permissions or merge controls.
+        Flag leaked secrets and real personal values (ids, domains, email
+        addresses, names, keys, payment links) without repeating them; the repos
+        are public and only placeholders and example.com values are allowed.
+        Code, comments, docstrings, commit messages and PR text are English.
+        New or changed comments and strings must be English; older Swedish
+        comments may stay until someone changes them.
+        When behavior, settings or commands change, check that README.md,
+        docs/ and CLAUDE.md change in the same PR.
+        Flag new version pins; existing pins kept current by Renovate are fine.
+
+    - path: "**/*.{md,mdx}"
+      instructions: |
+        Documentation. Check that commands, paths, settings and examples match
+        the code in this PR, and that links and anchors resolve.
+        Follow the language rule in the repo's CLAUDE.md: Swedish-first repos keep
+        an English mirror under docs/eng/ that must change in the same PR as the
+        Swedish page; English-only repos write everything in English.
+        Commands go one per code block, and only what is pasted goes inside it.
+        Flag real personal values; only placeholders and example values are allowed.
+        Do not comment on wording, tone or style unless it makes an instruction
+        wrong or ambiguous.
+
+    - path: "**/{CLAUDE,AGENTS}.md"
+      instructions: |
+        Agent instructions. The core rules block between the kärnregler markers
+        is a verbatim copy of STYRNING.md in the .github repo and stays in Swedish;
+        flag any edit inside it that is not a sync from the source.
+        Check that commands listed under Commands actually exist in the repo.
 
     - path: ".github/**"
       instructions: |
-        Prioritize token permissions, secrets and execution
-        of untrusted PR code.
+        Workflows, actions and CODEOWNERS are owner-managed and only Renovate or
+        Dependabot may update them; flag other edits to those paths.
+        Prioritize token permissions, secrets and execution of untrusted PR code.
         Do not require custom CodeQL workflows when default setup is used.
-        Do not require ci.yaml, dependabot.yaml or language files
-        just because they are missing.
-        Assess existing safeguards and the change's concrete risks.
+        Do not require ci.yaml, dependabot.yaml or language files just because
+        they are missing.
 
-  # Shared label list. Make sure the labels exist in every repo.
+    - path: ".github/ISSUE_TEMPLATE/**"
+      instructions: |
+        Labels set by issue forms must exist in the repo's label set.
+        Forms must warn against posting secrets or personal data.
+
+    - path: "**/*.{js,mjs,cjs,ts,tsx}"
+      instructions: |
+        Cloudflare Workers code. Watch the free plan limit of 10 ms CPU per
+        request: flag full scans, unbounded loops or per-request inventories.
+        Check input validation, auth on every non-public route, CSP and escaping
+        of untrusted data. Errors must reach console.error to show in Workers
+        Issues; log at most one or two lines per run.
+
+    - path: "**/*.py"
+      instructions: |
+        Check input validation, timeouts on network calls, and that scraped or
+        generated output is never committed to the repo.
+
+    - path: "**/*.{rs,swift,kt,kts,cs}"
+      instructions: |
+        SSH client code. Prioritize host key verification (TOFU must reject a
+        changed key), credential and key handling, session lifetime and
+        cancellation, and the shared sync format and encryption.
+
+    - path: "**/*.sh"
+      instructions: |
+        Quote every variable, fail on errors, and never pass untrusted input to
+        eval or an unquoted command. Values that reach a shell go through env.
+
+    - path: "**/{Dockerfile,docker-compose.yml,docker/**}"
+      instructions: |
+        Run as a non-root user, keep secrets out of the image and layers, and
+        never overwrite existing keys or data under /data. docker/README.md,
+        docker-compose.yml and CHANGELOG.md must agree with each other.
+
+    - path: "**/{wrangler.jsonc,wrangler.toml,cloudflare.example.env}"
+      instructions: |
+        Code must stay generic with __NAME__ placeholders. Every placeholder in
+        use must be declared in cloudflare.example.env with an example value and
+        a comment on where the real value comes from. Never enable anything that
+        can cost money.
+
+    - path: "**/{zensical.toml,mkdocs.yml}"
+      instructions: |
+        Every page under docs/ must be in nav; Swedish-first repos list each page
+        in both the Swedish and the English section.
+
+  # Labels. GitHub's default set plus the shared extras; every label exists in
+  # every repo. Change type: one or more. Review state: exactly one, enforced by
+  # the mutually exclusive group below. Repos add their own labels on top.
   suggested_labels: true
   auto_apply_labels: true
   labeling_instructions:
     - label: fix
-      instructions: "The main change fixes a concrete defect."
-
+      instructions: >-
+        Apply when the main change corrects a concrete defect, regression or
+        security flaw. Do not use bug on PRs; bug is for issues.
     - label: feature
-      instructions: "The main change adds a new capability."
-
+      instructions: >-
+        Apply when the PR adds a new capability users or operators can use.
     - label: enhancement
-      instructions: "Improves existing functionality without mainly fixing a defect."
-
+      instructions: >-
+        Apply when the PR improves existing functionality without mainly fixing
+        a defect or adding a new capability.
     - label: chore
-      instructions: "Routine maintenance not mainly about dependencies or documentation."
-
+      instructions: >-
+        Apply for routine maintenance, refactoring, tooling and configuration
+        that is not mainly about dependencies or documentation.
     - label: documentation
-      instructions: "The main purpose is documentation or user help."
-
+      instructions: >-
+        Apply when the main purpose is documentation, README, docs/ pages,
+        agent instructions or user help.
     - label: dependencies
-      instructions: "Changes project dependencies, runtime versions or container base images."
-
+      instructions: >-
+        Apply when the PR adds, updates or removes dependencies, runtime
+        versions or container base images.
     - label: security
       instructions: >-
-        Changes a security control or fixes a documented security risk.
-        A routine dependency update is not enough.
-
+        Apply when the PR changes a security control (auth, permissions,
+        encryption, host keys, CSP, secret handling) or fixes a documented
+        security risk. A routine dependency update alone is not enough.
     - label: accessibility
-      instructions: "Fixes a concrete accessibility barrier in the user interface."
-
-    # Review state. CodeRabbit can only add labels, never remove them, so whoever
-    # fixes the findings removes a state label that no longer applies.
+      instructions: >-
+        Apply when the PR fixes or introduces a concrete accessibility barrier
+        in a user interface.
+    - label: duplicate
+      instructions: >-
+        Apply only when an open PR already makes the same change; name it in the
+        walkthrough.
     - label: review-ready
       instructions: >-
-        The latest review found no actionable defects and no open
-        review threads remain. Do not apply it while needs-rework or
-        rewrite-recommended is on the PR.
-
+        Apply when the latest review found no actionable defects and no review
+        thread is waiting on the author.
     - label: needs-rework
       instructions: >-
-        The latest review found defects that must be fixed before merge,
-        but the approach itself is sound.
-
+        Apply when the latest review found defects that must be fixed before
+        merge, but the approach itself is sound.
     - label: rewrite-recommended
       instructions: >-
-        The approach is fundamentally flawed, for example wrong layer,
-        unsafe design or repeated patching of the same root cause,
-        so rewriting is safer than fixing it further.
+        Apply when the approach is fundamentally flawed, for example the wrong
+        layer, an unsafe design or repeated patching of the same root cause, so
+        rewriting is safer than fixing it further.
+  mutually_exclusive_groups:
+    review-state: ["review-ready", "needs-rework", "rewrite-recommended"]
 
-  # Advisory checks.
+  # Every check is advisory. None of them can block a merge.
   pre_merge_checks:
+    override_requested_reviewers_only: false
     title:
       mode: warning
       requirements: >-
-        Follow Conventional Commits with the type feat, fix, docs,
-        refactor, perf, test, build, ci, chore, style or revert.
-        Use type: description or type(scope): description.
-        Write the description in English and state the main change correctly.
-        Accept an existing title that meets these requirements.
+        Conventional Commits with the type feat, fix, docs, refactor, perf,
+        test, build, ci, chore, style or revert, as `type: description` or
+        `type(scope): description`, in English, stating the main change
+        correctly. A site or documentation change that must be released needs
+        feat or fix. Accept an existing title that meets these requirements.
     description:
       mode: warning
+    issue_assessment:
+      mode: warning
+    # Docstring coverage is not a convention in these repos and the check would
+    # only add noise; docstring guidance below still applies when docs are written.
     docstrings:
       mode: "off"
-    issue_assessment:
-      mode: "off"
-    custom_checks: []
+    custom_checks:
+      - name: "Docs in the same PR"
+        mode: warning
+        instructions: >-
+          Pass when changes to behavior, settings, commands or deployment come
+          with matching updates to README.md, docs/ and CLAUDE.md, or when no
+          such change was made. Fail and name the missing files otherwise.
+      - name: "No personal values"
+        mode: warning
+        instructions: >-
+          Pass when the diff adds no real ids, domains, email addresses, names,
+          keys, tokens, payment links or account details; placeholders,
+          __NAME__ values and example.com values are fine. Fail and point to the
+          line without repeating the value otherwise.
 
-  # Disable code generation and agent-based add-ons.
+  # Agent features that generate commits or PRs can use credits and act on
+  # their own, so they stay off. Their guidance still lives in code_generation.
   finishing_touches:
-    docstrings: {enabled: false}
-    unit_tests: {enabled: false}
-    simplify: {enabled: false}
-    autofix: {enabled: false}
-    fix_ci: {enabled: false}
-    resolve_merge_conflict: {enabled: false}
+    docstrings: { enabled: false }
+    unit_tests: { enabled: false }
+    simplify: { enabled: false }
+    autofix: { enabled: false }
+    fix_ci: { enabled: false }
+    resolve_merge_conflict: { enabled: false }
     custom: []
 
   post_merge_actions: []
 
   tools:
-    # Keep checks that CodeQL does not replace.
-    actionlint: {enabled: true}
-    shellcheck: {enabled: true}
+    # Security scanners.
+    gitleaks: { enabled: true }
+    trufflehog: { enabled: true }
+    osvScanner: { enabled: true }
+    trivy: { enabled: true }
+    opengrep: { enabled: true }
+    semgrep: { enabled: true }
+    presidio: { enabled: true }
+    skillspector: { enabled: true }
+    checkov: { enabled: true }
+    zizmor: { enabled: true }
+    ast-grep: { essential_rules: true }
 
-    # Avoid extra comments about other GitHub checks.
-    github-checks: {enabled: false}
+    # Linters for the languages used across the repos.
+    actionlint: { enabled: true }
+    shellcheck: { enabled: true }
+    hadolint: { enabled: true }
+    dotenvLint: { enabled: true }
+    ruff: { enabled: true }
+    clippy: { enabled: true }
+    swiftlint: { enabled: true }
+    detekt: { enabled: true }
 
-    # Limit overlapping lint and style comments.
-    biome: {enabled: false}
-    eslint: {enabled: false}
-    oxc: {enabled: false}
-    markdownlint: {enabled: false}
-    languagetool: {enabled: false}
-    vale: {enabled: false}
-    yamllint: {enabled: false}
-    stylelint: {enabled: false}
-    htmlhint: {enabled: false}
-    sqlfluff: {enabled: false}
-    squawk: {enabled: false}
+    # Explains failing GitHub checks on the PR.
+    github-checks: { enabled: true }
 
-    # Keep security analysis for relevant files.
-    gitleaks: {enabled: true}
-    trufflehog: {enabled: true}
-    osvScanner: {enabled: true}
-    trivy: {enabled: true}
-    zizmor: {enabled: true}
+    # Off: overlap with Prettier and the repos' own checks, or only style noise.
+    biome: { enabled: false }
+    eslint: { enabled: false }
+    oxc: { enabled: false }
+    markdownlint: { enabled: false }
+    languagetool: { enabled: false }
+    vale: { enabled: false }
+    yamllint: { enabled: false }
+    stylelint: { enabled: false }
+    htmlhint: { enabled: false }
+    sqlfluff: { enabled: false }
+    squawk: { enabled: false }
+    flake8: { enabled: false }
+    pylint: { enabled: false }
 
 chat:
   art: false
   auto_reply: false
+  allow_non_org_members: true
   integrations:
-    jira: {usage: disabled}
-    linear: {usage: disabled}
+    jira: { usage: disabled }
+    linear: { usage: disabled }
 
 knowledge_base:
-  # Use explicit path_instructions instead of old rule files.
+  opt_out: false
+  # Reads the repos' CLAUDE.md and AGENTS.md as review criteria.
   code_guidelines:
-    enabled: false
-
+    enabled: true
+    filePatterns:
+      - "**/CLAUDE.md"
+      - "**/AGENTS.md"
   web_search:
     enabled: true
-
-  learnings: {scope: local}
-  issues: {scope: local}
-  pull_requests: {scope: local}
-
-  jira: {usage: disabled}
-  linear: {usage: disabled}
-  mcp: {usage: disabled}
-
+  learnings: { scope: auto }
+  issues: { scope: auto }
+  pull_requests: { scope: auto }
+  jira: { usage: disabled }
+  linear: { usage: disabled }
+  mcp: { usage: disabled }
   automatic_linking_mode: disabled
   linked_repositories: []
 
-issue_enrichment:
-  auto_enrich:
-    enabled: false
+# Guidance for generated docstrings and tests. Generation itself is off above;
+# the guidance also tells reviews what good docstrings and tests look like.
+code_generation:
+  docstrings:
+    language: en-US
+    path_instructions:
+      - path: "**/*"
+        instructions: |
+          Write docstrings in English in the language's own format (JSDoc, Rust
+          doc comments, Swift DocC, KDoc, XML doc comments, Python docstrings).
+          Describe what the function does, its parameters, return value, errors
+          and side effects. Never include real personal values or secrets.
+  unit_tests:
+    path_instructions:
+      - path: "**/*"
+        instructions: |
+          Use the repo's existing test framework and layout. Test behavior, not
+          formatting: call the real code instead of reading source files. Cover
+          the changed risk, edge cases and error paths. Use placeholders and
+          example.com values only.
 
+issue_enrichment:
+  # Adds context and complexity to new issues.
+  auto_enrich:
+    enabled: true
+  # Implementation plans run agents and stay off.
   planning:
     enabled: false
     auto_planning:
       enabled: false
-
   labeling:
     auto_apply_labels: true
     labeling_instructions:
       - label: bug
-        instructions: "Concrete defects, crashes or regressions."
-
+        instructions: "A concrete defect, crash or regression with steps or evidence."
       - label: feature
-        instructions: "Request for a new capability."
-
+        instructions: "A request for a new capability."
       - label: enhancement
-        instructions: "Improvement of existing functionality, not a bug report."
-
+        instructions: "An improvement of existing functionality, not a bug report."
       - label: chore
         instructions: "Routine maintenance not mainly about dependencies or documentation."
-
       - label: dependencies
-        instructions: "The issue concerns a project dependency or runtime version."
-
+        instructions: "Concerns a project dependency, runtime version or base image."
       - label: documentation
-        instructions: "The issue concerns documentation or user instructions."
-
+        instructions: "Concerns documentation or user instructions."
       - label: security
-        instructions: "A concretely described security risk. Do not repeat secrets."
-
+        instructions: "A concretely described security risk. Never repeat secrets."
       - label: accessibility
-        instructions: "A concrete accessibility barrier in the user interface."
-
+        instructions: "A concrete accessibility barrier in a user interface."
       - label: question
-        instructions: "The issue mainly asks for information, not a code change."
+        instructions: "Mainly asks for information, not a change."
+      - label: duplicate
+        instructions: "Only when an open issue clearly describes the same problem; link it."
+      - label: good first issue
+        instructions: >-
+          Only for a small, well-scoped change in one area with clear acceptance
+          criteria and no security or sync-format impact.
