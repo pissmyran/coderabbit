@@ -149,11 +149,13 @@ reviews:
     - label: accessibility
       instructions: "Fixes a concrete accessibility barrier in the user interface."
 
-    # Review state. Exactly one of these at a time; replace it when the state changes.
+    # Review state. CodeRabbit can only add labels, never remove them, so whoever
+    # fixes the findings removes a state label that no longer applies.
     - label: review-ready
       instructions: >-
         The latest review found no actionable defects and no open
-        review threads remain.
+        review threads remain. Do not apply it while needs-rework or
+        rewrite-recommended is on the PR.
 
     - label: needs-rework
       instructions: >-

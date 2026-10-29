@@ -45,7 +45,7 @@ Jämför ändrade nycklar mot schemat `https://coderabbit.ai/integrations/schema
 - **Gemensamt här, specifikt där:** inställningar som gäller alla repon hör hemma här; riskinstruktioner för enskilda filer hör hemma i respektive repo.
 - **Instruktionerna skrivs på engelska**, korta och konkreta, i samma stil som de befintliga. Allt utom dokumentationen är på engelska i alla repon.
 - **Försvaga aldrig granskningen:** slå inte av säkerhetsverktyg, slå inte på automatiska godkännanden och lägg inte till undantag för kod.
-- **Etiketterna** i `labeling_instructions` ska finnas i alla repon. Lägger du till en etikett, säg det i PR:en så att ägaren kan skapa den.
+- **Etiketterna** i `labeling_instructions` ska finnas i alla repon. Lägger du till en etikett, säg det i PR:en så att ägaren kan skapa den. CodeRabbit kan bara sätta etiketter, aldrig ta bort dem; den som rättar fynden tar bort en granskningsetikett (`review-ready`, `needs-rework`, `rewrite-recommended`) som inte längre stämmer.
 
 ## Granskning i det här repot
 
