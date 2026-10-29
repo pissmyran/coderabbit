@@ -123,7 +123,6 @@ reviews:
     - "!**/yarn.lock"
     - "!**/Cargo.lock"
     - "!**/Package.resolved"
-    - "!**/gradle/wrapper/**"
 
   path_instructions:
     - path: "**/*"
@@ -183,22 +182,20 @@ reviews:
 
     - path: "**/*.{js,mjs,cjs,ts,tsx}"
       instructions: |
-        Cloudflare Workers code. Watch the free plan limit of 10 ms CPU per
-        request: flag full scans, unbounded loops or per-request inventories.
-        Check input validation, auth on every non-public route, CSP and escaping
-        of untrusted data. Errors must reach console.error to show in Workers
-        Issues; log at most one or two lines per run.
+        Check input validation, escaping of untrusted data before it reaches
+        HTML, SQL or a shell, unhandled promise rejections, and errors that are
+        swallowed instead of logged. Repo files add runtime-specific rules.
 
     - path: "**/*.py"
       instructions: |
-        Check input validation, timeouts on network calls, and that scraped or
-        generated output is never committed to the repo.
+        Check input validation, timeouts on network calls, safe handling of
+        files and subprocesses, and errors that are swallowed instead of logged.
 
     - path: "**/*.{rs,swift,kt,kts,cs}"
       instructions: |
-        SSH client code. Prioritize host key verification (TOFU must reject a
-        changed key), credential and key handling, session lifetime and
-        cancellation, and the shared sync format and encryption.
+        Check error handling on every fallible call, resource and thread
+        lifetimes, cancellation, and that secrets are never logged or kept in
+        memory longer than needed. Repo files add domain-specific rules.
 
     - path: "**/*.sh"
       instructions: |
@@ -305,15 +302,17 @@ reviews:
         mode: warning
         instructions: >-
           Pass when changes to behavior, settings, commands or deployment come
-          with matching updates to README.md, docs/ and CLAUDE.md, or when no
-          such change was made. Fail and name the missing files otherwise.
+          with matching updates to README.md, CLAUDE.md and the affected pages
+          under docs/ (only when the repo has a docs/ directory), or when no such
+          change was made. Fail and name the missing files otherwise.
       - name: "No personal values"
         mode: warning
         instructions: >-
-          Pass when the diff adds no real ids, domains, email addresses, names,
-          keys, tokens, payment links or account details; placeholders,
-          __NAME__ values and example.com values are fine. Fail and point to the
-          line without repeating the value otherwise.
+          Pass when the diff adds no real ids, domains, email addresses, people's
+          names, keys, tokens, payment links or account details; placeholders,
+          __NAME__ values, example.com values and the names of this account's own
+          public repositories and products are fine. Fail and point to the line
+          without repeating the value otherwise.
 
   # Agent features that generate commits or PRs can use credits and act on
   # their own, so they stay off. Their guidance still lives in code_generation.

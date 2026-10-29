@@ -14,7 +14,8 @@ Den centrala CodeRabbit-konfigurationen för repona under `pissmyran`. Varje rep
 - **Språk:** granskningar, sammanfattningar, titlar och instruktioner på engelska.
 - **Automatik:** granskning av varje PR och varje ny push (utkast och PR:er med etiketten `wip` hoppas över), automatiska etiketter, automatiskt tilldelade granskare, PR-sammanfattning, och PR-titel när titeln innehåller `@coderabbitai`.
 - **Granskning:** både kod och dokumentation granskas. Bara genererade filer och låsfiler hoppas över.
-- **Instruktioner per sökväg:** allmänna regler för alla filer, dokumentation, agentinstruktioner, `.github/`, Workers-kod, Python, SSH-klienternas kod, skalskript, Docker, Cloudflare-konfiguration och dokumentationssajten.
+- **Instruktioner per sökväg:** allmänna regler för alla filer, dokumentation, agentinstruktioner, `.github/`, JavaScript och TypeScript, Python, Rust, Swift, Kotlin och C#, skalskript, Docker, Cloudflare-konfiguration och dokumentationssajten.
+- **Körmiljöns regler** (Cloudflare Workers, SSH-klienterna, kontaktverktygen) ligger i respektive repos egen `.coderabbit.yaml`, inte här.
 - **Kontroller före merge (rådgivande):** titeln enligt Conventional Commits, beskrivningen, länkade ärenden, "Docs in the same PR" och "No personal values".
 - **Verktyg:** säkerhetsskannrar (gitleaks, trufflehog, osv-scanner, trivy, opengrep, semgrep, presidio, skillspector, checkov, zizmor, ast-grep) och linters för repornas språk (actionlint, shellcheck, hadolint, dotenv-linter, ruff, clippy, swiftlint, detekt). Linters som överlappar Prettier eller bara ger stilbrus är av.
 - **Kunskap:** CodeRabbit läser repots `CLAUDE.md` och `AGENTS.md` som granskningskriterier, söker på webben och lär sig av tidigare granskningar.
