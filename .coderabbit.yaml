@@ -17,7 +17,7 @@ tone_instructions: >-
   Skip praise, repetition, cosmetic remarks, and authorship guesses.
 
 inheritance: false
-early_access: false
+early_access: true
 enable_free_tier: true
 
 reviews:
