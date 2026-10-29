@@ -119,7 +119,6 @@ reviews:
     - "!**/build/**"
     - "!**/site/**"
     - "!**/node_modules/**"
-    - "!**/*.min.js"
     - "!**/*.min.css"
     - "!**/*.map"
 
