@@ -200,6 +200,18 @@ reviews:
         lifetimes, cancellation, and that secrets are never logged or kept in
         memory longer than needed. Repo files add domain-specific rules.
 
+    - path: "**/*.{js,jsx,ts,tsx,py,rs,swift,kt,cs}"
+      instructions: |
+        Public functions and types carry English doc comments in the language's
+        own format that state purpose, parameters, return value, errors and side
+        effects. Flag comments that are missing, stale or in another language.
+
+    - path: "**/*.{test,spec}.*"
+      instructions: |
+        Tests call the real code and check behavior, not formatting or source
+        text. Flag tests that only mirror the implementation, skip error paths,
+        or weaken an assertion to pass. Use placeholders and example.com values.
+
     - path: "**/*.sh"
       instructions: |
         Quote every variable, fail on errors, and never pass untrusted input to
@@ -399,8 +411,9 @@ knowledge_base:
   automatic_linking_mode: disabled
   linked_repositories: []
 
-# Guidance for generated docstrings and tests. Generation itself is off above;
-# the guidance also tells reviews what good docstrings and tests look like.
+# Guidance for generated docstrings and tests. Generation itself is off above,
+# and these entries only apply when it runs. The same standards for reviews
+# live in reviews.path_instructions (docstring and test entries).
 code_generation:
   docstrings:
     language: en-US
