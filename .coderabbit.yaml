@@ -203,11 +203,13 @@ reviews:
 
     - path: "**/*.{js,jsx,ts,tsx,py,rs,swift,kt,cs}"
       instructions: |
-        Public functions and types carry English doc comments in the language's
-        own format that state purpose, parameters, return value, errors and side
-        effects. Flag comments that are missing, stale or in another language.
+        Doc comments are in English, in the language's own format, and state
+        purpose, parameters, return value, errors and side effects. Flag comments
+        that are stale, misleading or in another language. Flag a missing doc
+        comment only where the repo's CLAUDE.md or the language convention asks
+        for one.
 
-    - path: "**/*.{test,spec}.*"
+    - path: "**/{*.test.*,*.spec.*,test_*.py,*_test.py,*_test.rs,*Test.kt,*Tests.swift,*Tests.cs,tests/**}"
       instructions: |
         Tests call the real code and check behavior, not formatting or source
         text. Flag tests that only mirror the implementation, skip error paths,
