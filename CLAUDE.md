@@ -2,13 +2,7 @@
 
 Guidance for Claude Code in `pissmyran/coderabbit`. The repo holds the central CodeRabbit configuration that every other repo inherits.
 
-The shared rules for all repos live in [GOVERNANCE.md](https://github.com/pissmyran/.github/blob/main/GOVERNANCE.md) in `pissmyran/.github`. The core rules below are a verbatim copy. At the start of every session, compare the version in the marker with the source:
-
-```sh
-curl -fsS https://raw.githubusercontent.com/pissmyran/.github/main/GOVERNANCE.md
-```
-
-If the copy is older, update it first in a separate PR (`docs: sync core rules from .github`).
+The shared rules for all repos live in [GOVERNANCE.md](https://github.com/pissmyran/.github/blob/main/GOVERNANCE.md) in `pissmyran/.github`. The core rules below are a verbatim copy. Compare the version in the marker with the source at the start of every session (`curl -sS https://raw.githubusercontent.com/pissmyran/.github/main/GOVERNANCE.md`); if the copy is older, update it first in a separate PR (`docs: sync core rules from .github`).
 
 ## Core rules
 
