@@ -66,7 +66,7 @@ reviews:
     Do not add unverified effects or issue references.
 
   # Presentation. Keep what informs, drop what only adds noise.
-  review_status: true
+  review_status: false
   # Hide run details; query live rolling-window quota with
   # `@coderabbitai rate limit`. Do not invent remaining reviews or an ETA.
   review_info: false
