@@ -42,7 +42,7 @@ reviews:
 
   # CodeRabbit writes the title only when the PR title contains this
   # placeholder. Open a PR titled `[auto-title]` to get a generated title.
-  auto_title_placeholder: "auto"
+  auto_title_placeholder: "[auto-title]"
   auto_title_instructions: |
     Write the PR title in English following Conventional Commits:
     `type: description` or `type(scope): description`.
@@ -66,7 +66,7 @@ reviews:
     Do not add unverified effects or issue references.
 
   # Presentation. Keep what informs, drop what only adds noise.
-  review_status: true
+  review_status: false
   # Hide run details; query live rolling-window quota with
   # `@coderabbitai rate limit`. Do not invent remaining reviews or an ETA.
   review_info: false
@@ -243,9 +243,10 @@ reviews:
         Every page under docs/ must be in nav; Swedish-first repos list each page
         in both the Swedish and the English section.
 
-  # Labels. GitHub's default set plus the shared extras; every label exists in
-  # every repo. Change type: one or more. Review state: at most one, enforced by
-  # the mutually exclusive group below. Repos add their own labels on top.
+  # Create the three quality labels in every consuming repo before use.
+  # Change type: one or more. Review state and quality state: at most one each.
+  # Quality assessments are revision-specific; continuous synchronization is
+  # not guaranteed. Event-driven invalidation needs owner-managed automation.
   suggested_labels: true
   auto_apply_labels: true
   labeling_instructions:
@@ -299,8 +300,39 @@ reviews:
         Apply only with concrete evidence that the approach is fundamentally
         flawed, such as an unsafe design or repeated patching of the same root
         cause. Explain why rewriting is safer than further fixes.
+    - label: quality-verified
+      instructions: >-
+        PRs only. Apply only with evidence for the current head revision:
+        applicable review is complete; every finding, including those in resolved
+        or outdated threads, has a verified fix or documented evidence-based
+        dismissal; required repository validation and applicable security checks
+        succeeded; no required review or verification is pending or inconclusive.
+        A skipped check requires documented non-applicability, not a pass.
+        Accepted or deferred valid findings remain findings-open.
+        Never infer success from merging, thread resolution, absent or skipped
+        checks, or evidence from an older revision. This is a revision-specific
+        quality assessment, not GitHub approval or a change to mergeability.
+    - label: findings-open
+      instructions: >-
+        PRs only. Apply when a confirmed unresolved finding or failed validation
+        remains unaddressed. Include findings in resolved or outdated threads
+        and accepted or deferred valid findings. This takes precedence over
+        missing verification evidence. Explain the concrete finding or failure;
+        missing, stale or inconclusive evidence alone is not a confirmed defect.
+        This is a revision-specific assessment, not a change to mergeability.
+    - label: verification-needed
+      instructions: >-
+        PRs only. Apply when no confirmed unresolved finding or unaddressed failed
+        validation is known, but required current-head evidence is unavailable,
+        stale, incomplete, pending or inconclusive. Include new unreviewed commits,
+        absent validation and skipped checks without documented non-applicability.
+        Merging or resolving threads alone never proves quality-verified.
+        This is a revision-specific evidence assessment, not a confirmed defect,
+        GitHub approval or a change to mergeability. Continuous synchronization
+        is not guaranteed; event-driven invalidation needs owner-managed automation.
   mutually_exclusive_groups:
     review-state: ["review-ready", "needs-rework", "rewrite-recommended"]
+    quality-state: ["quality-verified", "findings-open", "verification-needed"]
 
   # Every check is advisory. None of them can block a merge.
   pre_merge_checks:
