@@ -85,7 +85,7 @@ reviews:
   poem: false
   enable_prompt_for_ai_agents: true
 
-  # Omit reviewer suggestions and automatic assignments.
+  # Suggest reviewers and assign them automatically.
   suggested_reviewers: true
   auto_assign_reviewers: true
   suggested_reviewers_instructions: []
@@ -445,7 +445,7 @@ issue_enrichment:
   # Adds context and complexity to new issues.
   auto_enrich:
     enabled: true
-  # Implementation plans run agents and stay off.
+  # Implementation plans are generated automatically for new issues.
   planning:
     enabled: true
     auto_planning:
